@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
 
     <style>
         * {
@@ -60,10 +61,46 @@
             position: relative;
             cursor: pointer;
             overflow: hidden;
-            transition: transform .3s;
+            transition: transform 0.3s;
             background: #fff;
             padding: 8px;
             border-radius: 10px;
+        }
+
+        /* Small devices (phones, less than 600px) */
+        @media (max-width: 599px) {
+            .library {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+                gap: 8px;
+            }
+
+            .library div {
+                padding: 6px;
+            }
+        }
+
+        /* Medium devices (tablets, 600px to 1023px) */
+        @media (min-width: 600px) and (max-width: 1023px) {
+            .library {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+                gap: 10px;
+            }
+
+            .library div {
+                padding: 7px;
+            }
+        }
+
+        /* Large devices (desktops, 1024px and up) */
+        @media (min-width: 1024px) {
+            .library {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 12px;
+            }
+
+            .library div {
+                padding: 8px;
+            }
         }
 
         .library div:hover {
@@ -121,13 +158,17 @@
         }
 
         #Modal .content {
-            background: #222;
+            background: linear-gradient(90deg, #000000, #484646);
             margin: auto;
-            padding: 20px;
             border-radius: 10px;
             max-width: 500px;
             display: flex;
+            flex-direction: column;
             gap: 10px;
+        }
+
+        #modalTrailer {
+            pointer-events: none !important;
         }
     </style>
 </head>
@@ -147,124 +188,187 @@
     </header>
 
     <main>
-
-
-        <h1 class="section-title">🎬 Movies</h1>
+        <h1 class="section-title">Latest Movies</h1>
         <div id="moviesLibrary" class="library"></div>
 
-        <h1 class="section-title">📺 Series</h1>
+        <h1 class="section-title">Latest Series</h1>
         <div id="tvLibrary" class="library"></div>
 
         <!-- Shared modal -->
         <div id="Modal">
             <div class="content">
-                <img id="modalPoster" style="max-width: 120px;">
-                <div>
-                    <h3 id="modalTitle"></h3>
-                    <p id="modalOverview"></p>
+                <div style="position: relative; width: 100%;">
+                    <a id="ModalClose"
+                        style="position: absolute; top: 5px; right: 10px; font-size: 32px; color: #fff; cursor: pointer;"><i
+                            class="ri-close-circle-line"></i></a>
+                    <a id="detailsLink"
+                        style="text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; position: absolute; right: 10px; bottom: 10px; width: 150px;">Play
+                        ▶</a>
+                    <img id="modalPoster" style="width: 100%; height: 250px;">
+                    <iframe id="modalTrailer" style="max-width:100%; width:100%; height:250px; border:0; display:none;"
+                        allow="autoplay; encrypted-media">
+                    </iframe>
+                </div>
 
-                    <div style="margin-top: 10px; display: flex; justify-content: end; gap: 20px;">
-                        <a id="ModalClose"
-                            style="padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer;">Close</a>
-                        <a id="detailsLink"
-                            style="padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer;">Watch</a>
-                    </div>
+                <div style="padding: 10px; display: flex; flex-direction: column; gap: 10px;">
+                    <h3 style="color: #fff; text-shadow: 1px 1px 5px #000, 1px 1px 10px #000, 1px 1px 10px #000, 1px 1px 10px #000;"
+                        id="modalTitle"></h3>
+                    <p style="font-size: 16px; text-align: justify;" id="modalOverview"></p>
                 </div>
             </div>
         </div>
+
 
     </main>
 
 
     <script>
-    // Dynamically choose API base URL
-    const API_BASE = "https://eliteplus.pythonanywhere.com";
+        // Dynamically choose API base URL
+        const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-    const moviesLibrary = document.getElementById('moviesLibrary');
-    const tvLibrary = document.getElementById('tvLibrary');
-    const queryInput = document.getElementById('query');
-    const form = document.getElementById('searchForm');
+        const moviesLibrary = document.getElementById('moviesLibrary');
+        const tvLibrary = document.getElementById('tvLibrary');
+        const queryInput = document.getElementById('query');
+        const form = document.getElementById('searchForm');
+        const modalTrailer = document.getElementById('modalTrailer');
 
-    const modal = document.getElementById('Modal');
-    const modalClose = document.getElementById('ModalClose');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPoster = document.getElementById('modalPoster');
-    const modalOverview = document.getElementById('modalOverview');
-    const detailsLink = document.getElementById('detailsLink');
+        const modal = document.getElementById('Modal');
+        const modalClose = document.getElementById('ModalClose');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalPoster = document.getElementById('modalPoster');
+        const modalOverview = document.getElementById('modalOverview');
+        const detailsLink = document.getElementById('detailsLink');
 
-    // Fetch movies
-    async function fetchMovies(query = "") {
-        try {
-            const url = query 
-                ? `${API_BASE}/api/movies?query=${encodeURIComponent(query)}`
-                : `${API_BASE}/api/movies`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            renderLibrary(data.movies || [], moviesLibrary, "movie");
-        } catch (err) {
-            console.error("Error fetching movies:", err);
-            moviesLibrary.innerHTML = "<p style='color:#fff;'>Failed to load movies.</p>";
+        // Fetch movies
+        async function fetchMovies(query = "") {
+            try {
+                const url = query
+                    ? `${API_BASE}/api/movies?query=${encodeURIComponent(query)}`
+                    : `${API_BASE}/api/movies`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderLibrary(data.movies || [], moviesLibrary, "movie");
+            } catch (err) {
+                console.error("Error fetching movies:", err);
+                moviesLibrary.innerHTML = "<p style='color:#fff;'>Failed to load movies.</p>";
+            }
         }
-    }
 
-    // Fetch TV shows
-    async function fetchTV(query = "") {
-        try {
-            const url = query 
-                ? `${API_BASE}/api/tv?query=${encodeURIComponent(query)}`
-                : `${API_BASE}/api/tv`;
-            const res = await fetch(url);
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const data = await res.json();
-            renderLibrary(data.tv_shows || [], tvLibrary, "tv");
-        } catch (err) {
-            console.error("Error fetching TV shows:", err);
-            tvLibrary.innerHTML = "<p style='color:#fff;'>Failed to load series.</p>";
+        // Fetch Trailer
+        async function fetchTrailer(id, type) {
+            try {
+                const url = `${API_BASE}/api/trailer?id=${id}&type=${type}`;
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (data.youtube_key) {
+                    return `https://www.youtube.com/embed/${data.youtube_key}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0&showinfo=0&disablekb=1&fs=0&iv_load_policy=3`;
+                }
+
+                return null;
+            } catch (err) {
+                console.error("Trailer error:", err);
+                return null;
+            }
         }
-    }
 
-    // Render movies or TV shows into grid
-    function renderLibrary(items, container, type) {
-        container.innerHTML = "";
-        items.forEach(item => {
-            const div = document.createElement('div');
-            div.innerHTML = item.poster 
-                ? `<img src="${item.poster}" style="width:100%;border-radius:5px;">` 
-                : '';
-            div.addEventListener('click', () => showModal(item, type));
-            container.appendChild(div);
+
+        // Fetch TV shows
+        async function fetchTV(query = "") {
+            try {
+                const url = query
+                    ? `${API_BASE}/api/tv?query=${encodeURIComponent(query)}`
+                    : `${API_BASE}/api/tv`;
+                const res = await fetch(url);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                renderLibrary(data.tv_shows || [], tvLibrary, "tv");
+            } catch (err) {
+                console.error("Error fetching TV shows:", err);
+                tvLibrary.innerHTML = "<p style='color:#fff;'>Failed to load series.</p>";
+            }
+        }
+
+        // Render movies or TV shows into grid
+        function renderLibrary(items, container, type) {
+            container.innerHTML = "";
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.innerHTML = item.poster
+                    ? `<img src="${item.poster}" style="width:100%;border-radius:5px;">`
+                    : '';
+                div.addEventListener('click', () => showModal(item, type));
+                container.appendChild(div);
+            });
+        }
+
+        // Show modal with movie/series details
+        let trailerTimeout;
+
+        async function showModal(item, type) {
+            // Reset timeout if modal reused
+            if (trailerTimeout) clearTimeout(trailerTimeout);
+
+            modalTitle.textContent = item.title || item.name;
+
+            // Show poster/backdrop
+            modalPoster.style.display = "flex";
+            modalTrailer.style.display = "none";
+            modalPoster.src = item.backdrop || item.poster || '';
+
+            modalOverview.textContent = item.overview || 'No overview available.';
+            detailsLink.href = type === "movie"
+                ? `movie.html?id=${item.id}`
+                : `series.html?id=${item.id}`;
+
+            modal.style.display = 'flex';
+
+            // After 2 seconds → load trailer
+            trailerTimeout = setTimeout(async () => {
+                const trailerURL = await fetchTrailer(item.id, type);
+
+                if (trailerURL) {
+                    modalTrailer.src = trailerURL;
+                    modalPoster.style.display = "none";
+                    modalTrailer.style.display = "block";
+                }
+            }, 2000);
+        }
+
+
+
+        // Modal close handlers
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+            modalTrailer.src = "";
+            modalPoster.style.display = "block";
+            modalTrailer.style.display = "none";
+            if (trailerTimeout) clearTimeout(trailerTimeout);
         });
-    }
 
-    // Show modal with movie/series details
-    function showModal(item, type) {
-        modalTitle.textContent = item.title || item.name;
-        modalPoster.src = item.poster || '';
-        modalOverview.textContent = item.overview || 'No overview available.';
-        detailsLink.href = type === "movie"
-            ? `movie.html?id=${item.id}`
-            : `series.html?id=${item.id}`;
-        modal.style.display = 'flex';
-    }
+        window.addEventListener('click', e => {
+            if (e.target == modal) {
+                modal.style.display = 'none';
+                modalTrailer.src = "";
+                modalPoster.style.display = "block";
+                modalTrailer.style.display = "none";
+                if (trailerTimeout) clearTimeout(trailerTimeout);
+            }
+        });
 
-    // Modal close handlers
-    modalClose.addEventListener('click', () => modal.style.display = 'none');
-    window.addEventListener('click', e => {
-        if (e.target == modal) modal.style.display = 'none';
-    });
 
-    // Search form
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        fetchMovies(queryInput.value);
-        fetchTV(queryInput.value);
-    });
+        // Search form
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            fetchMovies(queryInput.value);
+            fetchTV(queryInput.value);
+        });
 
-    // Initial load
-    fetchMovies();
-    fetchTV();
-</script>
+        // Initial load
+        fetchMovies();
+        fetchTV();
+    </script>
 
 
 </body>
