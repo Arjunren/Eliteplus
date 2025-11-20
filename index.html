@@ -192,14 +192,14 @@
         const detailsLink = document.getElementById('detailsLink');
 
         async function fetchMovies(query = "") {
-            const url = query ? `${API_BASE}/api/movies?query=${encodeURIComponent(query)}` : `${API_BASE}/api/movies`;
+            const url = query ? `${API_BASE}api/movies?query=${encodeURIComponent(query)}` : `${API_BASE}/api/movies`;
             const res = await fetch(url);
             const data = await res.json();
             renderLibrary(data.movies || [], moviesLibrary, "movie");
         }
 
         async function fetchTV(query = "") {
-            const url = query ? `${API_BASE}/api/tv?query=${encodeURIComponent(query)}` : `${API_BASE}/api/tv`;
+            const url = query ? `${API_BASE}api/tv?query=${encodeURIComponent(query)}` : `${API_BASE}/api/tv`;
             const res = await fetch(url);
             const data = await res.json();
             renderLibrary(data.tv_shows || [], tvLibrary, "tv");
