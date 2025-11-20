@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>TV Series Player - ELITES+</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: "Montserrat", sans-serif;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(160deg, #f1ab11, #311803);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: linear-gradient(90deg, #111, #484646);
+        }
+
+        main {
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        footer {
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        h1,
+        h2,
+        p,
+        blockquote {
+            color: #111;
+        }
+
+        #player {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .series-info {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            color: #fff;
+        }
+
+        .season-select {
+            padding: 10px;
+            width: fit-content;
+            color: #fff;
+            background-color: #111;
+            border: none;
+            margin-top: 10px;
+        }
+
+        #episodes {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-top: 10px;
+        }
+
+        #episodes button {
+            padding: 10px;
+            cursor: pointer;
+            color: #fff;
+            background: linear-gradient(90deg, #111, #484646);
+            border: none;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 style="color:#fff; cursor:pointer;" onclick="window.location.href='index.html'">ELITES +</h1>
+    </header>
+
+    <main>
+        <div id="player"></div>
+
+        <div class="series-info">
+            <h1 id="tvName"></h1>
+            <p id="tvOverview"></p>
+        </div>
+
+        <div class="series-info">
+            <h1>Watch Episodes</h1>
+            <label for="seasonSelect">Select Season:</label>
+            <select id="seasonSelect" class="season-select" onchange="showEpisodes()"></select>
+            <div id="episodes"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p style="font-weight:bold;">ELITES+©2025-2026</p>
+        <blockquote>
+            Data provided by Consumet and TMDb API. ELITES+ doesn’t host content; we only share links.
+        </blockquote>
+    </footer>
+
+    <script>
+        const API_BASE = "https://eliteplus.pythonanywhere.com/";
+        const urlParams = new URLSearchParams(window.location.search);
+        const tvId = urlParams.get("id");
+
+        const tvNameEl = document.getElementById("tvName");
+        const tvOverviewEl = document.getElementById("tvOverview");
+        const seasonSelect = document.getElementById("seasonSelect");
+        const episodesDiv = document.getElementById("episodes");
+        const playerDiv = document.getElementById("player");
+
+        let seasonsData = [];
+
+        if (!tvId) {
+            document.body.innerHTML = "<h2>TV Series ID is required!</h2>";
+        } else {
+            fetch(`${API_BASE}/api/series?id=${tvId}`, { mode: 'cors' })
+                .then(async res => {
+                    if (!res.ok) {
+                        const text = await res.text();
+                        throw new Error(`HTTP ${res.status}: ${text}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    tvNameEl.textContent = data.name;
+                    tvOverviewEl.textContent = data.overview || "No overview available.";
+
+                    seasonsData = data.seasons_data || [];
+
+                    // Populate season dropdown
+                    seasonSelect.innerHTML = '';
+                    seasonsData.forEach((season, idx) => {
+                        const opt = document.createElement("option");
+                        opt.value = idx;
+                        opt.textContent = `Season ${season.season_number}`;
+                        seasonSelect.appendChild(opt);
+                    });
+
+                    showEpisodes();
+                })
+                .catch(err => {
+                    console.error("Error fetching series:", err);
+                    document.body.innerHTML = `<h2>Error loading series data!<br>${err.message}</h2>`;
+                });
+        }
+
+        function showEpisodes() {
+            const idx = seasonSelect.value;
+            const season = seasonsData[idx];
+            episodesDiv.innerHTML = '';
+
+            if (!season || !season.episodes) return;
+
+            season.episodes.forEach(ep => {
+                const btn = document.createElement("button");
+                btn.textContent = `Episode ${ep.episode_number}: ${ep.name}`;
+                btn.onclick = () => playEpisode(tvId, season.season_number, ep.episode_number);
+                episodesDiv.appendChild(btn);
+            });
+
+            // Play first episode by default
+            if (season.episodes.length > 0) {
+                playEpisode(tvId, season.season_number, season.episodes[0].episode_number);
+            }
+        }
+
+        function playEpisode(tvId, season, episode) {
+            playerDiv.innerHTML = `<iframe src="https://vidlink.pro/tv/${tvId}/${season}/${episode}" width="100%" height="500" frameborder="0" allowfullscreen allow="fullscreen; encrypted-media"></iframe>`;
+        }
+    </script>
+</body>
+
+</html>
