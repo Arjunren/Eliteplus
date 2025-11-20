@@ -67,42 +67,6 @@
             border-radius: 10px;
         }
 
-        /* Small devices (phones, less than 600px) */
-        @media (max-width: 599px) {
-            .library {
-                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-                gap: 8px;
-            }
-
-            .library div {
-                padding: 6px;
-            }
-        }
-
-        /* Medium devices (tablets, 600px to 1023px) */
-        @media (min-width: 600px) and (max-width: 1023px) {
-            .library {
-                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-                gap: 10px;
-            }
-
-            .library div {
-                padding: 7px;
-            }
-        }
-
-        /* Large devices (desktops, 1024px and up) */
-        @media (min-width: 1024px) {
-            .library {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: 12px;
-            }
-
-            .library div {
-                padding: 8px;
-            }
-        }
-
         .library div:hover {
             transform: scale(1.02);
         }
@@ -198,7 +162,8 @@
                         style="position: absolute; top: 5px; right: 10px; font-size: 32px; color: #fff; cursor: pointer;"><i
                             class="ri-close-circle-line"></i></a>
                     <img id="modalPoster" style="width: 100%; height: 250px;">
-                    <iframe id="modalTrailer" style="border-radius: 10px; width:100%; height:250px; border:0; display:none;"
+                    <iframe id="modalTrailer"
+                        style="border-radius: 10px; width:100%; height:250px; border:0; display:none;"
                         allow="autoplay; encrypted-media">
                     </iframe>
                 </div>
@@ -290,14 +255,16 @@
         function renderLibrary(items, container, type) {
             container.innerHTML = "";
             items.forEach(item => {
+                // Skip if there is no poster
+                if (!item.poster) return;
+
                 const div = document.createElement('div');
-                div.innerHTML = item.poster
-                    ? `<img src="${item.poster}" style="width:100%;border-radius:5px;">`
-                    : '';
+                div.innerHTML = `<img src="${item.poster}" style="width:100%;border-radius:5px;">`;
                 div.addEventListener('click', () => showModal(item, type));
                 container.appendChild(div);
             });
         }
+
 
         // Show modal with movie/series details
         let trailerTimeout;
