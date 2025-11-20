@@ -89,7 +89,7 @@
     </footer>
 
     <script>
-        const API_BASE = "https://eliteplus.pythonanywhere.com"; // Flask API server
+        const API_BASE = "https://eliteplus.pythonanywhere.com";
         const params = new URLSearchParams(window.location.search);
         const movieId = params.get("id");
 
@@ -115,8 +115,7 @@
                     width="100%" 
                     height="500" 
                     frameborder="0" 
-                    allow="fullscreen; encrypted-media"
-                    sandbox="allow-scripts allow-same-origin allow-popups allow-forms">
+                    allow="fullscreen; encrypted-media">
                 </iframe>
             `;
                 })
