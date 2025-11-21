@@ -1,3 +1,4 @@
+<!-- FULL REDESIGN — MATCHING THE PROVIDED IMAGE -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,127 +7,327 @@
     <title>Movie Player - ELITES+</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
         * {
-            padding: 0;
             margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: "Montserrat", sans-serif;
         }
 
         body {
+            background: #020202;
             width: 100%;
             min-height: 100vh;
-            margin: 0;
-            background: linear-gradient(160deg, #f1ab11, #311803);
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            background: linear-gradient(90deg, #111, #484646);
-        }
-
-        main {
-            margin-top: 10px;
-            padding: 0 10px;
-        }
-
-        footer {
-            background-color: #fff;
-            padding: 10px;
-        }
-
-        h1,
-        h2,
-        p,
-        blockquote {
-            color: #111;
-        }
-
-        #player {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .movie-info {
+            padding-top: 100px;
             display: flex;
             flex-direction: column;
-            padding: 10px;
+            align-items: center;
+        }
+
+         header {
+            width: 100%;
+            height: 80px;
+
+            background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 4;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 20px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .Nav-Bar {
+            display: flex;
+            align-items: center;
+            min-height: 70px;
+        }
+
+        .Nav-Menu {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .Nav-Item {
+            margin: 0 10px;
+        }
+
+        .Nav-Item a {
+            position: relative;
+            font-size: 20px;
             color: #fff;
+            text-decoration: none;
+            padding: 5px 20px;
+            border-radius: 50px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .Hamburger {
+            display: none;
+        }
+
+        .Bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            -webkit-transition: all 0.3s ease-out;
+            transition: all 0.3s ease-out;
+            background-color: #fff;
+        }
+
+        @media (max-width: 768px) {
+
+            .Hamburger {
+                display: block;
+            }
+
+            .Hamburger.active .Bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .Hamburger.active .Bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .Hamburger.active .Bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .Nav-Menu {
+                position: fixed;
+                left: -100%;
+                top: 60px;
+                gap: 0;
+                flex-direction: column;
+                background-color: #111;
+                width: 100%;
+                height: 100vh;
+                text-align: center;
+                transition: 0.3s;
+            }
+
+            .Nav-Item {
+                margin: 16px 0;
+            }
+
+            .Nav-Menu.active {
+                left: 0;
+            }
+        }
+
+        .Nav-Item a::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            bottom: 0;
+            height: 2px;
+            width: 0%;
+            background-color: #00eaff;
+            transition: width 0.4s ease;
+        }
+
+        .Nav-Item a:hover::after {
+            width: calc(100% - 40px);
+        }
+
+        @keyframes underlineGrow {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: calc(100% - 40px);
+            }
+        }
+
+        .Nav-Item a:hover::after {
+            animation: underlineGrow 0.4s ease forwards;
+        }
+
+        /* Movie Card Container */
+        .movie-card {
+            width: 100%;
+            max-width: 1200px;
+            background: #111;
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid #333;
+            margin-bottom: 40px;
+        }
+
+        /* Thumbnail Container */
+        .thumb-wrapper {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid #444;
+            position: relative;
+        }
+
+        .thumb-wrapper iframe {
+            width: 100%;
+            height: 480px;
+            border: none;
+        }
+
+        /* Bottom Info Area */
+        .info-area {
+            margin-top: 20px;
+            color: #eee;
+        }
+
+        .info-area h1 {
+            font-size: 26px;
+            font-weight: 700;
+        }
+
+        .info-area p.overview {
+            margin-top: 10px;
+            line-height: 1.6;
+            color: #ccc;
+            font-size: 16px;
+        }
+
+        /* Metadata 2-column layout */
+        .meta-grid {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 40px;
+        }
+
+        .meta-item {
+            color: #ccc;
+            font-size: 15px;
+        }
+
+        .meta-item span {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            background: #fff;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        footer b {
+            font-size: 18px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .thumb-wrapper iframe {
+                height: 230px;
+            }
+
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
 <body>
-    <header>
-        <h1 style="color:#fff;cursor:pointer;" onclick="window.location.href='index.html'">ELITES +</h1>
+
+     <header style="z-index: 10;">
+            <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
+            <nav class="Nav-Bar">
+                <ul class="Nav-Menu">
+                    <li class="Nav-Item"><a href="library.html" class="nav-link">Home</a></li>
+                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
+                    <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
+                    <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
+                </ul>
+                <div class="Hamburger">
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                </div>
+            </nav>
     </header>
 
-    <main>
-        <div id="player"></div>
+    <div class="movie-card">
 
-        <div class="movie-info">
+        <!-- THUMBNAIL / PLAYER -->
+        <div class="thumb-wrapper" id="player"></div>
+
+        <!-- INFO AREA -->
+        <div class="info-area">
             <h1 id="title"></h1>
-            <p id="overview"></p>
+            <p class="overview" id="overview"></p>
+
+            <div class="meta-grid">
+                <div class="meta-item"><span>Genre:</span> <span id="genre"></span></div>
+                <div class="meta-item"><span>Quality:</span> HD</div>
+
+                <div class="meta-item"><span>Actors:</span> <span id="actors"></span></div>
+                <div class="meta-item"><span>Duration:</span> <span id="duration">—</span></div>
+
+                <div class="meta-item"><span>Director:</span> <span id="director"></span></div>
+                <div class="meta-item"><span>Release:</span> <span id="release"></span></div>
+
+                <div class="meta-item"><span>Country:</span> <span id="country"></span></div>
+                <div class="meta-item"><span>IMDb:</span> <span id="rating"></span></div>
+            </div>
         </div>
-    </main>
+
+    </div>
 
     <footer>
-        <p style="font-weight:bold;">ELITES+©2025-2026</p>
-        <blockquote>
-            Data provided by Consumet and TMDb API. ELITES+ doesn’t host movies; we only share links.
-        </blockquote>
+        <b>ELITES+ © 2025 – 2026</b><br>
+        <small>Data provided by Consumet and TMDb API. ELITES+ doesn’t host movies; we only share links.</small>
     </footer>
 
     <script>
         const API_BASE = "https://eliteplus.pythonanywhere.com";
-        const params = new URLSearchParams(window.location.search);
-        const movieId = params.get("id");
+        const movieId = new URLSearchParams(location.search).get("id");
 
         if (!movieId) {
-            document.body.innerHTML = "<h2>Movie ID is required!</h2>";
+            document.getElementById("player").innerHTML = "<h2 style='color:white;text-align:center;'>Movie ID missing!</h2>";
         } else {
-            fetch(`${API_BASE}/api/movie?id=${movieId}`, { mode: 'cors' })
-                .then(async res => {
-                    if (!res.ok) {
-                        const text = await res.text();
-                        throw new Error(`HTTP ${res.status}: ${text}`);
-                    }
-                    return res.json();
-                })
+            fetch(`${API_BASE}/api/movie?id=${movieId}`)
+                .then(res => res.json())
                 .then(movie => {
-                    document.getElementById("title").textContent = movie.title +
-                        (movie.original_title && movie.original_title !== movie.title ? ` (${movie.original_title})` : "");
+
+                    document.getElementById("title").textContent = movie.title || "Untitled";
                     document.getElementById("overview").textContent = movie.overview || "No overview available.";
 
+                    document.getElementById("genre").textContent = movie.genres?.join(", ") || "Unknown";
+                    document.getElementById("actors").textContent = movie.cast?.slice(0, 5).join(", ") || "Unknown";
+                    document.getElementById("director").textContent = movie.director || "Unknown";
+                    document.getElementById("country").textContent = movie.country || "—";
+                    document.getElementById("rating").textContent = movie.vote_average ? movie.vote_average + "/10" : "—";
+                    document.getElementById("release").textContent = movie.release_date || "—";
+                    document.getElementById("duration").textContent =
+    movie.runtime && movie.runtime !== "—" ? movie.runtime + " min" : "—";
+
+
                     document.getElementById("player").innerHTML = `
-                <iframe
-                    src="https://vidsrc.to/embed/movie/${movie.id}"
-                    width="100%" 
-                    height="500" 
-                    frameborder="0" 
-                    allow="fullscreen; encrypted-media">
-                </iframe>
-            `;
+                        <iframe src="https://vidsrc.to/embed/movie/${movie.id}" allow="fullscreen"></iframe>
+                    `;
                 })
-                .catch(err => {
-                    console.error("Error fetching movie:", err);
-                    document.body.innerHTML = `<h2>Error loading movie data!<br>${err.message}</h2>`;
+                .catch(() => {
+                    document.getElementById("player").innerHTML = "<h2 style='color:white;text-align:center;'>Error loading movie.</h2>";
                 });
         }
     </script>
-
 
 </body>
 

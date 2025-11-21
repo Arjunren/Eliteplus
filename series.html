@@ -1,123 +1,263 @@
+<!-- Full Series Page (matching Movie Page design) -->
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>TV Series Player - ELITES+</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-            font-family: "Montserrat", sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
+        body { background: #0d0d0d; color: #fff; }
 
-        body {
+                 header {
             width: 100%;
-            min-height: 100vh;
-            background: linear-gradient(160deg, #f1ab11, #311803);
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
+            height: 80px;
 
-        header {
+            background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 4;
+
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 10px;
-            background: linear-gradient(90deg, #111, #484646);
+            justify-content: space-between;
+            padding: 20px 20px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        main {
-            margin-top: 10px;
-            padding: 0 10px;
+        .Nav-Bar {
+            display: flex;
+            align-items: center;
+            min-height: 70px;
         }
 
-        footer {
+        .Nav-Menu {
+            list-style: none;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .Nav-Item {
+            margin: 0 10px;
+        }
+
+        .Nav-Item a {
+            position: relative;
+            font-size: 20px;
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 20px;
+            border-radius: 50px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .Hamburger {
+            display: none;
+        }
+
+        .Bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            -webkit-transition: all 0.3s ease-out;
+            transition: all 0.3s ease-out;
             background-color: #fff;
-            padding: 10px;
         }
 
-        h1,
-        h2,
-        p,
-        blockquote {
-            color: #111;
+        @media (max-width: 768px) {
+
+            .Hamburger {
+                display: block;
+            }
+
+            .Hamburger.active .Bar:nth-child(2) {
+                opacity: 0;
+            }
+
+            .Hamburger.active .Bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
+            }
+
+            .Hamburger.active .Bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .Nav-Menu {
+                position: fixed;
+                left: -100%;
+                top: 60px;
+                gap: 0;
+                flex-direction: column;
+                background-color: #111;
+                width: 100%;
+                height: 100vh;
+                text-align: center;
+                transition: 0.3s;
+            }
+
+            .Nav-Item {
+                margin: 16px 0;
+            }
+
+            .Nav-Menu.active {
+                left: 0;
+            }
         }
 
-        #player {
+        .Nav-Item a::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            bottom: 0;
+            height: 2px;
+            width: 0%;
+            background-color: #00eaff;
+            transition: width 0.4s ease;
+        }
+
+        .Nav-Item a:hover::after {
+            width: calc(100% - 40px);
+        }
+
+        @keyframes underlineGrow {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: calc(100% - 40px);
+            }
+        }
+
+        .Nav-Item a:hover::after {
+            animation: underlineGrow 0.4s ease forwards;
+        }
+
+
+        main { width: 100%; max-width: 1200px; margin: auto; padding: 20px; }
+
+        /* Player */
+        #player-wrapper { width: 100%; margin-bottom: 20px; }
+        #player iframe { width: 100%; height: 540px; border: none; border-radius: 10px; }
+
+        /* Info Box */
+        .info-box {
             margin-top: 20px;
-            display: flex;
-            justify-content: center;
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
         }
 
-        .series-info {
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            color: #fff;
-        }
+        .info-title { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .info-overview { opacity: 0.8; line-height: 1.5; }
 
-        .season-select {
+        /* Season Select */
+        .season-select-box {
+            margin-top: 25px; background: #1a1a1a;
+            padding: 20px; border-radius: 12px;
+        }
+        select {
             padding: 10px;
-            width: fit-content;
-            color: #fff;
-            background-color: #111;
+            border-radius: 6px;
             border: none;
+            background: #333;
+            color: #fff;
             margin-top: 10px;
+            font-size: 16px;
         }
 
         #episodes {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-top: 10px;
+            margin-top: 15px;
+            display: flex; flex-wrap: wrap; gap: 8px;
         }
 
         #episodes button {
-            padding: 10px;
-            cursor: pointer;
-            color: #fff;
-            background: linear-gradient(90deg, #111, #484646);
+            padding: 12px;
+            background: #111;
             border: none;
+            border-radius: 6px;
             text-align: left;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        #episodes button:hover { background: #333; }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            background: #111;
+            font-size: 14px;
+        }
+
+        @media (max-width: 700px) {
+            #player iframe { height: 300px; }
+            .info-title { font-size: 22px; }
         }
     </style>
 </head>
-
 <body>
-    <header>
-        <h1 style="color:#fff; cursor:pointer;" onclick="window.location.href='index.html'">ELITES +</h1>
+     <header style="z-index: 10;">
+            <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
+            <nav class="Nav-Bar">
+                <ul class="Nav-Menu">
+                    <li class="Nav-Item"><a href="library.html" class="nav-link">Home</a></li>
+                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
+                    <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
+                    <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
+                </ul>
+                <div class="Hamburger">
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                </div>
+            </nav>
     </header>
 
     <main>
-        <div id="player"></div>
-
-        <div class="series-info">
-            <h1 id="tvName"></h1>
-            <p id="tvOverview"></p>
+        <!-- PLAYER -->
+        <div id="player-wrapper">
+            <div id="player"></div>
         </div>
 
-        <div class="series-info">
-            <h1>Watch Episodes</h1>
-            <label for="seasonSelect">Select Season:</label>
-            <select id="seasonSelect" class="season-select" onchange="showEpisodes()"></select>
+        <!-- SERIES INFO -->
+        <div class="info-box">
+            <h2 class="info-title" id="tvName"></h2>
+            <p class="info-overview" id="tvOverview"></p>
+
+            <div class="meta-grid" style="display: flex; flex-direction: column; gap: 5px; padding: 5px 0;">
+                <p><strong>Genres:</strong> <span id="genres">Unknown</span></p>
+                <p><strong>Cast:</strong> <span id="actors">Unknown</span></p>
+                <p><strong>Creator:</strong> <span id="creator">Unknown</span></p>
+                <p><strong>Country:</strong> <span id="country">—</span></p>
+                <p><strong>Rating:</strong> <span id="rating">—</span></p>
+                <p><strong>First Air Date:</strong> <span id="release">—</span></p>
+            </div>
+        </div>
+
+        <!-- EPISODES -->
+        <div class="season-select-box">
+            <h2 class="info-title">Watch Episodes</h2>
+            <label>Select Season:</label>
+            <select id="seasonSelect" onchange="showEpisodes()"></select>
             <div id="episodes"></div>
         </div>
     </main>
 
     <footer>
-        <p style="font-weight:bold;">ELITES+©2025-2026</p>
-        <blockquote>
-            Data provided by Consumet and TMDb API. ELITES+ doesn’t host content; we only share links.
-        </blockquote>
+        <b>ELITES+ © 2025-2026</b><br>
+        Data provided by Consumet and TMDb API. ELITES+ does not host content.
     </footer>
 
     <script>
@@ -136,34 +276,34 @@
         if (!tvId) {
             document.body.innerHTML = "<h2>TV Series ID is required!</h2>";
         } else {
-            fetch(`${API_BASE}/api/series?id=${tvId}`, { mode: 'cors' })
-                .then(async res => {
-                    if (!res.ok) {
-                        const text = await res.text();
-                        throw new Error(`HTTP ${res.status}: ${text}`);
-                    }
-                    return res.json();
-                })
+            fetch(`${API_BASE}/api/series?id=${tvId}`)
+                .then(res => res.json())
                 .then(data => {
                     tvNameEl.textContent = data.name;
                     tvOverviewEl.textContent = data.overview || "No overview available.";
 
+                    // Metadata
+                    document.getElementById("genres").textContent = data.genres?.join(", ") || "Unknown";
+                    document.getElementById("actors").textContent = data.cast?.slice(0, 5).join(", ") || "Unknown";
+                    document.getElementById("creator").textContent = data.creator || "Unknown";
+                    document.getElementById("country").textContent = data.country || "—";
+                    document.getElementById("rating").textContent = data.vote_average ? data.vote_average + "/10" : "—";
+                    document.getElementById("release").textContent = data.first_air_date || "—";
+
                     seasonsData = data.seasons_data || [];
 
-                    // Populate season dropdown
                     seasonSelect.innerHTML = '';
-                    seasonsData.forEach((season, idx) => {
+                    seasonsData.forEach((s, i) => {
                         const opt = document.createElement("option");
-                        opt.value = idx;
-                        opt.textContent = `Season ${season.season_number}`;
+                        opt.value = i;
+                        opt.textContent = `Season ${s.season_number}`;
                         seasonSelect.appendChild(opt);
                     });
 
                     showEpisodes();
                 })
                 .catch(err => {
-                    console.error("Error fetching series:", err);
-                    document.body.innerHTML = `<h2>Error loading series data!<br>${err.message}</h2>`;
+                    document.body.innerHTML = `<h2>Error loading series<br>${err}</h2>`;
                 });
         }
 
@@ -172,7 +312,7 @@
             const season = seasonsData[idx];
             episodesDiv.innerHTML = '';
 
-            if (!season || !season.episodes) return;
+            if (!season) return;
 
             season.episodes.forEach(ep => {
                 const btn = document.createElement("button");
@@ -181,16 +321,16 @@
                 episodesDiv.appendChild(btn);
             });
 
-            // Play first episode by default
             if (season.episodes.length > 0) {
                 playEpisode(tvId, season.season_number, season.episodes[0].episode_number);
             }
         }
 
-        function playEpisode(tvId, season, episode) {
-            playerDiv.innerHTML = `<iframe src="https://vidlink.pro/tv/${tvId}/${season}/${episode}" width="100%" height="500" frameborder="0" allowfullscreen allow="fullscreen; encrypted-media"></iframe>`;
+        function playEpisode(id, season, episode) {
+            playerDiv.innerHTML = `
+                <iframe src="https://vidlink.pro/tv/${id}/${season}/${episode}" allowfullscreen allow="encrypted-media"></iframe>
+            `;
         }
     </script>
 </body>
-
 </html>

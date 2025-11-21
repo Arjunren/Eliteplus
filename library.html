@@ -34,125 +34,137 @@
             background: #020202;
         }
 
-        .navbar {
-            position: fixed;
+        header {
             width: 100%;
+            height: 80px;
+
+            background-color: rgba(0, 0, 0, 0.8);
+            position: fixed;
             top: 0;
             left: 0;
-            padding: 18px 3%;
+            z-index: 4;
+
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            background-color: #020202;
+            padding: 20px 20px;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
-
-        .logo span {
-            color: #00eaff;
-        }
-
-
-        .nav-links {
+        .Nav-Bar {
             display: flex;
             align-items: center;
-            gap: 30px;
+            min-height: 70px;
+        }
+
+        .Nav-Menu {
             list-style: none;
-            transition: 0.4s ease;
-        }
-
-        .nav-links li a {
-            text-decoration: none;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 500;
-            transition: 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links li a::after {
-            content: '';
-            position: absolute;
-            width: 0%;
-            height: 2px;
-            background: #00eaff;
-            bottom: -5px;
-            left: 0;
-            transition: width 0.3s ease;
-        }
-
-        .nav-links li a:hover::after {
+            display: flex;
+            align-items: center;
             width: 100%;
         }
 
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            justify-content: space-between;
-            width: 28px;
-            height: 21px;
+        .Nav-Item {
+            margin: 0 10px;
+        }
+
+        .Nav-Item a {
+            position: relative;
+            font-size: 20px;
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 20px;
+            border-radius: 50px;
+            overflow: hidden;
             cursor: pointer;
         }
 
-        .bar {
-            height: 3px;
-            width: 100%;
-            background: #fff;
-            border-radius: 10px;
-            transition: all 0.4s ease;
+        .Hamburger {
+            display: none;
         }
 
-        @media (max-width: 850px) {
-            .hamburger {
-                display: flex;
-                z-index: 1100;
+        .Bar {
+            display: block;
+            width: 25px;
+            height: 3px;
+            margin: 5px auto;
+            -webkit-transition: all 0.3s ease-out;
+            transition: all 0.3s ease-out;
+            background-color: #fff;
+        }
+
+        @media (max-width: 768px) {
+
+            .Hamburger {
+                display: block;
             }
 
-            .nav-links {
-                position: fixed;
-                right: -100%;
-                top: 0;
-                height: 100vh;
-                width: 35%;
-                background: rgba(15, 15, 15, 0.95);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                gap: 35px;
-                transition: right 0.5s ease;
-            }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .hamburger.active .bar:nth-child(1) {
-                transform: rotate(45deg) translate(5px, 6px);
-            }
-
-            .hamburger.active .bar:nth-child(2) {
+            .Hamburger.active .Bar:nth-child(2) {
                 opacity: 0;
             }
 
-            .hamburger.active .bar:nth-child(3) {
-                transform: rotate(-45deg) translate(5px, -6px);
+            .Hamburger.active .Bar:nth-child(1) {
+                transform: translateY(8px) rotate(45deg);
             }
 
-            .nav-links li a {
-                font-size: 1.2rem;
+            .Hamburger.active .Bar:nth-child(3) {
+                transform: translateY(-8px) rotate(-45deg);
+            }
+
+            .Nav-Menu {
+                position: fixed;
+                left: -100%;
+                top: 60px;
+                gap: 0;
+                flex-direction: column;
+                background-color: #111;
+                width: 100%;
+                height: 100vh;
+                text-align: center;
+                transition: 0.3s;
+            }
+
+            .Nav-Item {
+                margin: 16px 0;
+            }
+
+            .Nav-Menu.active {
+                left: 0;
             }
         }
 
+        .Nav-Item a::after {
+            content: "";
+            position: absolute;
+            left: 20px;
+            bottom: 0;
+            height: 2px;
+            width: 0%;
+            background-color: #00eaff;
+            transition: width 0.4s ease;
+        }
+
+        .Nav-Item a:hover::after {
+            width: calc(100% - 40px);
+        }
+
+        @keyframes underlineGrow {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: calc(100% - 40px);
+            }
+        }
+
+        .Nav-Item a:hover::after {
+            animation: underlineGrow 0.4s ease forwards;
+        }
+
         .hero {
-            margin-top: 100px;
             width: 100%;
         }
 
@@ -252,49 +264,48 @@
 
 <body>
 
-    <header class="navbar">
-        <div class="logo">Elite<span>+</span></div>
-
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Movie</a></li>
-            <li><a href="#">Series</a></li>
-            <li><a href="#">Anime</a></li>
-        </ul>
-
-        <div class="hamburger">
-            <div class="bar"></div>
-            <div class="bar"></div>
-            <div class="bar"></div>
-        </div>
+    <header style="z-index: 10;">
+            <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
+            <nav class="Nav-Bar">
+                <ul class="Nav-Menu">
+                    <li class="Nav-Item"><a href="library.html" class="nav-link"style="color: #00eaff;">Home</a></li>
+                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
+                    <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
+                    <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
+                </ul>
+                <div class="Hamburger">
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                    <span class="Bar"></span>
+                </div>
+            </nav>
     </header>
 
+        <div style="margin-top: 150px; margin-bottom: 50px; padding: 10px; display: flex; flex-direction: column; width: 100%; gap: 10px; justify-content: center; align-items: center; padding: 0 40px;">
+    <h1 style="color: #fff;">WELCOME TO <span style="color: #00eaff;">ELITE +</span></h1>
+
+    <p style="color: #ccc; max-width: 650px; text-align: center; font-size: 18px;">
+        Stream your favorite shows and movies completely sourced to watch.</p>
+
+    <form id="searchForm" style="position: relative;">
+        <input type="text" id="query" placeholder="Search..."
+            style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 300px; outline: none;">
+        <span style="position: absolute; right: 5px; top: 5px;">
+            <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
+        </span>
+    </form>
+</div>
+
+
     <section class="hero">
-        <div style="padding: 10px; width: 100%; display: flex; justify-content: end; padding: 0 40px;">
-            <form id="searchForm" >
-                <input type="text" id="query" placeholder="Search..."
-                    style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 200px; outline: none;">
-                <span style="position: absolute; right: 5px; top: 5px;">
-                    <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
-                </span>
-            </form>
-        </div>
         <div id="moviesLibrary" class="library"></div>
         <div id="tvLibrary" class="library"></div>
     </section>
-
-    <!-- <header>
-        <h1 onclick="window.location.href='library.html'" style="cursor: pointer; color: #fff;">ELITES +</h1>
-        <button id="logout">Logout</button>
-    </header> -->
 
     <!-- Shared modal -->
     <div id="Modal">
         <div class="content">
             <div style="position: relative; width: 100%;">
-                <a id="ModalClose"
-                    style="position: absolute; top: 5px; right: 10px; font-size: 32px; color: #fff; cursor: pointer;"><i
-                        class="ri-close-circle-line"></i></a>
                 <img id="modalPoster" style="width: 100%; height: 250px;">
                 <iframe id="modalTrailer" style="border-radius: 10px; width:100%; height:250px; border:0; display:none;"
                     allow="autoplay; encrypted-media">
@@ -306,8 +317,10 @@
                     id="modalTitle"></h3>
                 <p style="font-size: 16px; text-align: justify;" id="modalOverview"></p>
                 <a id="detailsLink"
-                    style="text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Play
-                    ▶</a>
+                    style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Play
+                    </a>
+                    <a id="ModalClose"
+                     style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Close</a>
             </div>
         </div>
     </div>
@@ -322,13 +335,19 @@
 
 
     <script>
-        const hamburger = document.querySelector(".hamburger");
-        const navLinks = document.querySelector(".nav-links");
+        const Hamburger = document.querySelector('.Hamburger');
+        const NavMenu = document.querySelector('.Nav-Menu');
 
-        hamburger.addEventListener("click", () => {
-            hamburger.classList.toggle("active");
-            navLinks.classList.toggle("active");
+        Hamburger.addEventListener('click', () => {
+            Hamburger.classList.toggle('active');
+            NavMenu.classList.toggle('active');
         });
+
+        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener("click", () => {
+            Hamburger.classList.remove('active');
+            NavMenu.classList.remove('active');
+        }))
+
         // Dynamically choose API base URL
         const API_BASE = "https://eliteplus.pythonanywhere.com";
 
