@@ -229,7 +229,7 @@
             padding: 20px;
             z-index: 20;
         }
-        
+
 
         #Modal .content {
             background: linear-gradient(90deg, #000000, #484646);
@@ -401,6 +401,10 @@
             text-decoration: none;
         }
 
+        #query {
+            width: 200px;
+        }
+
         @media (max-width: 768px) {
             .hero-info {
                 max-width: 80%;
@@ -421,6 +425,14 @@
                 font-size: 14px;
             }
 
+            #query {
+                width: 150px;
+            }
+
+            .HT {
+                font-size: 18px;
+            }
+
         }
     </style>
 </head>
@@ -429,29 +441,32 @@
 
     <header style="z-index: 10;">
         <div style="display: flex; align-items: center;">
-            <h1 style="color: #fff; cursor: pointer;" onclick="window.location.href='movielibrary.html'">ELITES <span style="color: #00eaff;">+</span></h1>
+            <h1 class="HT" style="color: #fff; cursor: pointer;" onclick="window.location.href='movielibrary.html'">
+                ELITES <span style="color: #00eaff;">+</span></h1>
             <nav class="Nav-Bar">
                 <ul class="Nav-Menu">
                     <li class="Nav-Item"><a href="library.html" class="nav-link">Home</a></li>
-                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link" style="color: #00eaff;">Movies</a></li>
+                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link" style="color: #00eaff;">Movies</a>
+                    </li>
                     <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
                     <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
                 </ul>
             </nav>
         </div>
-        <div style="padding: 10px; width:10%; display: flex; align-items: center; justify-content: end; gap: 30px; padding: 0 10px;">
+        <div
+            style="padding: 10px; width:10%; display: flex; align-items: center; justify-content: end; gap: 30px; padding: 0 10px;">
             <form style="position: relative;" id="searchForm">
                 <input type="text" id="query" placeholder="Search..."
-                    style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 200px; outline: none;">
+                    style="padding: 10px; border-radius: 10px; border: 1px solid #111; outline: none;">
                 <span style="position: absolute; right: 15px; top: 5px;">
                     <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
                 </span>
             </form>
-                <div class="Hamburger">
-                    <span class="Bar"></span>
-                    <span class="Bar"></span>
-                    <span class="Bar"></span>
-                </div>
+            <div class="Hamburger">
+                <span class="Bar"></span>
+                <span class="Bar"></span>
+                <span class="Bar"></span>
+            </div>
         </div>
     </header>
 
@@ -478,11 +493,11 @@
                 <h3 id="modalTitle"></h3>
                 <p id="modalOverview" style="margin:10px 0"></p>
                 <div style="display: flex; width: 100%; align-items: center; gap: 10px;">
-                <a id="detailsLink"
-                    style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Play
+                    <a id="detailsLink"
+                        style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Play
                     </a>
-                <a id="ModalClose" 
-                    style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Close</a>
+                    <a id="ModalClose"
+                        style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Close</a>
                 </div>
             </div>
         </div>
