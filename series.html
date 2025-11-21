@@ -1,3 +1,10 @@
+<script>
+    // Check if user is logged in
+    if (localStorage.getItem("loggedIn") !== "true") {
+        // Not logged in, redirect to login page
+        window.location.href = "/";
+    }
+</script>
 <!-- Full Series Page (matching Movie Page design) -->
 <!DOCTYPE html>
 <html lang="en">
