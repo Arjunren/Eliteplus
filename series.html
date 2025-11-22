@@ -268,6 +268,21 @@
     </footer>
 
     <script>
+        // ========== NAV MENU ==========
+            const Hamburger = document.querySelector('.Hamburger');
+            const NavMenu = document.querySelector('.Nav-Menu');
+
+            Hamburger.addEventListener('click', () => {
+                Hamburger.classList.toggle('active');
+                NavMenu.classList.toggle('active');
+            });
+
+            document.querySelectorAll('.nav-link').forEach(n =>
+                n.addEventListener("click", () => {
+                    Hamburger.classList.remove('active');
+                    NavMenu.classList.remove('active');
+                })
+            );
         const API_BASE = "https://eliteplus.pythonanywhere.com";
         const urlParams = new URLSearchParams(window.location.search);
         const tvId = urlParams.get("id");
