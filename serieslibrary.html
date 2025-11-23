@@ -1,10 +1,3 @@
-<script>
-    // Check if user is logged in
-    if (localStorage.getItem("loggedIn") !== "true") {
-        // Not logged in, redirect to login page
-        window.location.href = "/";
-    }
-</script>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -64,8 +57,8 @@
             width: 100%;
         }
 
-        .Nav-Item {
-            margin: 0 10px;
+         .Nav-Item {
+            margin: 0 1px 0 10px;
         }
 
         .Nav-Item a {
@@ -73,7 +66,7 @@
             font-size: 20px;
             color: #fff;
             text-decoration: none;
-            padding: 5px 20px;
+            padding: 5px 10px;
             border-radius: 50px;
             overflow: hidden;
             cursor: pointer;
@@ -131,10 +124,7 @@
             .Nav-Menu.active {
                 left: 0;
             }
-
-            .Nav-Item a {
-                font-size: 14px;
-            }
+            
         }
 
         .Nav-Item a::after {
@@ -523,6 +513,14 @@
             window.location.href = "/";
         });
     </script>
+
+<script>
+    // Check if user is logged in
+    if (localStorage.getItem("loggedIn") !== "true") {
+        // Not logged in, redirect to login page
+        window.location.href = "/";
+    }
+</script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
