@@ -265,36 +265,37 @@
 <body>
 
     <header style="z-index: 10;">
-            <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
-            <nav class="Nav-Bar">
-                <ul class="Nav-Menu">
-                    <li class="Nav-Item"><a href="library.html" class="nav-link"style="color: #00eaff;">Home</a></li>
-                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
-                    <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
-                    <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
-                </ul>
-                <div class="Hamburger">
-                    <span class="Bar"></span>
-                    <span class="Bar"></span>
-                    <span class="Bar"></span>
-                </div>
-            </nav>
+        <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
+        <nav class="Nav-Bar">
+            <ul class="Nav-Menu">
+                <li class="Nav-Item"><a href="library.html" class="nav-link" style="color: #00eaff;">Home</a></li>
+                <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
+                <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
+                <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
+            </ul>
+            <div class="Hamburger">
+                <span class="Bar"></span>
+                <span class="Bar"></span>
+                <span class="Bar"></span>
+            </div>
+        </nav>
     </header>
 
-        <div style="margin-top: 150px; margin-bottom: 50px; padding: 10px; display: flex; flex-direction: column; width: 100%; gap: 10px; justify-content: center; align-items: center; padding: 0 40px;">
-    <h1 style="color: #fff;">WELCOME TO <span style="color: #00eaff;">ELITE +</span></h1>
+    <div
+        style="margin-top: 150px; margin-bottom: 50px; padding: 10px; display: flex; flex-direction: column; width: 100%; gap: 10px; justify-content: center; align-items: center; padding: 0 40px;">
+        <h1 style="color: #fff;">WELCOME TO <span style="color: #00eaff;">ELITE +</span></h1>
 
-    <p style="color: #ccc; max-width: 650px; text-align: center; font-size: 18px;">
-        Stream your favorite shows and movies completely sourced to watch.</p>
+        <p style="color: #ccc; max-width: 650px; text-align: center; font-size: 18px;">
+            Stream your favorite shows and movies completely sourced to watch.</p>
 
-    <form id="searchForm" style="position: relative;">
-        <input type="text" id="query" placeholder="Search..."
-            style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 300px; outline: none;">
-        <span style="position: absolute; right: 5px; top: 5px;">
-            <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
-        </span>
-    </form>
-</div>
+        <form id="searchForm" style="position: relative;">
+            <input type="text" id="query" placeholder="Search..."
+                style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 300px; outline: none;">
+            <span style="position: absolute; right: 5px; top: 5px;">
+                <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
+            </span>
+        </form>
+    </div>
 
 
     <section class="hero">
@@ -318,9 +319,9 @@
                 <p style="font-size: 16px; text-align: justify;" id="modalOverview"></p>
                 <a id="detailsLink"
                     style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Play
-                    </a>
-                    <a id="ModalClose"
-                     style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Close</a>
+                </a>
+                <a id="ModalClose"
+                    style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Close</a>
             </div>
         </div>
     </div>
@@ -350,6 +351,36 @@
 
         // Dynamically choose API base URL
         const API_BASE = "https://eliteplus.pythonanywhere.com";
+        async function checkAuth() {
+            const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user");
+
+            if (!token || !user) {
+                // No login data at all
+                window.location.href = "/login.html";
+                return;
+            }
+
+            const res = await fetch(API_BASE + "/api/check", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token
+                },
+                body: JSON.stringify({ Username: user })
+            });
+
+            const data = await res.json();
+
+            if (!data.valid) {
+                // Token invalid or logged in somewhere else
+                localStorage.clear();
+                window.location.href = "/login.html";
+            }
+        }
+
+        // Run on page load
+        checkAuth();
 
         const moviesLibrary = document.getElementById('moviesLibrary');
         const tvLibrary = document.getElementById('tvLibrary');

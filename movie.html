@@ -280,14 +280,10 @@
 
             <div class="meta-grid">
                 <div class="meta-item"><span>Genre:</span> <span id="genre"></span></div>
-                <div class="meta-item"><span>Quality:</span> HD</div>
-
                 <div class="meta-item"><span>Actors:</span> <span id="actors"></span></div>
                 <div class="meta-item"><span>Duration:</span> <span id="duration">—</span></div>
-
                 <div class="meta-item"><span>Director:</span> <span id="director"></span></div>
                 <div class="meta-item"><span>Release:</span> <span id="release"></span></div>
-
                 <div class="meta-item"><span>Country:</span> <span id="country"></span></div>
                 <div class="meta-item"><span>IMDb:</span> <span id="rating"></span></div>
             </div>
@@ -353,6 +349,36 @@
                     document.getElementById("player").innerHTML = "<h2 style='color:white;text-align:center;'>Error loading movie.</h2>";
                 });
         }
+        async function checkAuth() {
+            const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user");
+
+            if (!token || !user) {
+                // No login data at all
+                window.location.href = "/login.html";
+                return;
+            }
+
+            const res = await fetch(API_BASE + "/api/check", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token
+                },
+                body: JSON.stringify({ Username: user })
+            });
+
+            const data = await res.json();
+
+            if (!data.valid) {
+                // Token invalid or logged in somewhere else
+                localStorage.clear();
+                window.location.href = "/login.html";
+            }
+        }
+
+        // Run on page load
+        checkAuth();
     </script>
 
 </body>

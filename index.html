@@ -9,6 +9,7 @@
         integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -116,83 +117,24 @@
             border: 1px solid #fff;
         }
 
-            /* .divider {
-                display: flex;
-                align-items: center;
-                text-align: center;
-                margin: 20px 0;
-                color: #000000;
-            }
-
-            .divider span,
-            p {
-                font-weight: 500;
-                color: #4b4a4a;
-                font-size: 13px;
-            }
-
-            .divider::before,
-            .divider::after {
-                content: '';
-                flex: 1;
-                border-bottom: 1px solid #b4b4b4;
-            }
-
-            .divider:not(:empty)::before {
-                margin-right: 10px;
-            }
-
-            .divider:not(:empty)::after {
-                margin-left: 10px;
-            }
-
-            .footer-links {
-                margin-top: 15px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 30px;
-            }
-
-            .footer-links a {
-                text-decoration: none;
-                color: #000;
-            }
-
-            .footer-links div {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .footer-links i {
-                background: #e9edf1;
-                font-size: 22px;
-                width: 44px;
-                height: 44px;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #000;
-                transition: all .5s ease;
-            }
-
-            .footer-links p {
-                color: #000;
-            }
-
-            .footer-links i:hover {
-                background: #0d47a1;
-                color: white;
-            } */
+        /* ERROR MESSAGE BOX */
+        #errorBox {
+            display: none;
+            background: #ffdddd;
+            color: #d00000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+            border: 1px solid #d00000;
+        }
     </style>
 </head>
 
 <body>
     <form action="">
         <legend>ELITE<span style="color: #00eaff;">+</span></legend>
+
         <div class="det-container">
             <label for="email">Email</label>
             <input type="text" name="email" id="Username" required>
@@ -200,7 +142,10 @@
             <label for="password">Password</label>
             <div style="position: relative;">
                 <input class="pass" type="password" name="password" id="Password" required>
-                <span id="togglePass" style="position: absolute; font-size: 28px; right: 10px; top: 0; cursor: pointer;"><i class="ri-eye-off-fill"></i></span>
+                <span id="togglePass"
+                    style="position: absolute; font-size: 28px; right: 10px; top: 0; cursor: pointer;">
+                    <i class="ri-eye-off-fill"></i>
+                </span>
             </div>
         </div>
 
@@ -208,91 +153,70 @@
             <button class="loginBtn" type="submit">Log In</button>
         </div>
 
-        <!-- <div class="divider">
-            <span>or continue with</span>
-        </div>
+        <!-- ERROR BOX -->
+        <div id="errorBox"></div>
 
-        <p>Get started with Cubehub connect instantly through your favorite social media</p>
-
-        <div class="footer-links">
-            <a href="#">
-                <div>
-                    <i class="fa-brands fa-google"></i>
-                    <p>Google</p>
-                </div>
-            </a>
-            <a href="#">
-                <div>
-                    <i class="fa-brands fa-facebook"></i>
-                    <p>Facebook</p>
-                </div>
-            </a>
-            <a href="#">
-                <div>
-                    <i class="fa-brands fa-linkedin"></i>
-                    <p>Linkedin</p>
-                </div>
-            </a>
-            <a href="#">
-                <div>
-                    <i class="fa-brands fa-x-twitter"></i>
-                    <p>X</p>
-                </div>
-            </a>
-        </div> -->
     </form>
-   <script>
-    const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-    // ---------------------------
-    // PASSWORD SHOW / HIDE LOGIC
-    // ---------------------------
-    const passInput = document.getElementById("Password");
-    const togglePass = document.getElementById("togglePass");
+    <script>
+        const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-    togglePass.addEventListener("click", () => {
-        if (passInput.type === "password") {
-            passInput.type = "text";
-            togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
-        } else {
-            passInput.type = "password";
-            togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
-        }
-    });
+        // PASSWORD TOGGLE
+        const passInput = document.getElementById("Password");
+        const togglePass = document.getElementById("togglePass");
 
-    // ---------------------------
-    // LOGIN LOGIC
-    // ---------------------------
-    document.querySelector("form").addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const username = document.getElementById("Username").value;
-        const password = document.getElementById("Password").value;
-
-        try {
-            const response = await fetch(`${API_BASE}/api/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    Username: username,
-                    Password: password
-                })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                localStorage.setItem("loggedIn", "true");
-                window.location.href = data.redirect;
+        togglePass.addEventListener("click", () => {
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
             } else {
-                alert(data.error);
+                passInput.type = "password";
+                togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
             }
-        } catch (err) {
-            alert("Failed to reach server");
-            console.error(err);
-        }
-    });
-</script>
+        });
+
+        // LOGIN LOGIC
+        document.querySelector("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById("Username").value;
+            const password = document.getElementById("Password").value;
+            const errorBox = document.getElementById("errorBox");
+
+            errorBox.style.display = "none";
+            errorBox.innerText = "";
+
+            try {
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        Username: username,
+                        Password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // 🔥 THIS IS WHERE YOU PUT THE TOKEN
+                    localStorage.setItem("user", username);
+                    localStorage.setItem("token", data.token);
+
+                    window.location.href = data.redirect;
+                } else {
+                    errorBox.style.display = "block";
+                    errorBox.innerText = data.error || "Incorrect username or password.";
+                }
+            } catch (err) {
+                errorBox.style.display = "block";
+                errorBox.innerText = "Failed to reach server.";
+                console.error(err);
+            }
+        });
+
+
+    </script>
 
 </body>
 
