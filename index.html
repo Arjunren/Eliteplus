@@ -158,65 +158,69 @@
 
     </form>
 
-    <script>
-        const API_BASE = "https://eliteplus.pythonanywhere.com";
+<script>
+    const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-        // PASSWORD TOGGLE
-        const passInput = document.getElementById("Password");
-        const togglePass = document.getElementById("togglePass");
+    /* =============================
+          PASSWORD TOGGLE
+    ============================== */
+    const passInput = document.getElementById("Password");
+    const togglePass = document.getElementById("togglePass");
 
-        togglePass.addEventListener("click", () => {
-            if (passInput.type === "password") {
-                passInput.type = "text";
-                togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
+    togglePass.addEventListener("click", () => {
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
+        } else {
+            passInput.type = "password";
+            togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
+        }
+    });
+
+    /* =============================
+          LOGIN LOGIC
+    ============================== */
+    document.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById("Username").value;
+        const password = document.getElementById("Password").value;
+        const errorBox = document.getElementById("errorBox");
+
+        errorBox.style.display = "none";
+        errorBox.innerText = "";
+
+        try {
+            const response = await fetch(`${API_BASE}/api/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Username: username,
+                    Password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // SAVE LOGIN SESSION
+                localStorage.setItem("user", username);
+                localStorage.setItem("token", data.token);
+
+                // REDIRECT TO YOUR PAGE (library.html)
+                window.location.href = "/library.html";
             } else {
-                passInput.type = "password";
-                togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
-            }
-        });
-
-        // LOGIN LOGIC
-        document.querySelector("form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById("Username").value;
-            const password = document.getElementById("Password").value;
-            const errorBox = document.getElementById("errorBox");
-
-            errorBox.style.display = "none";
-            errorBox.innerText = "";
-
-            try {
-                const response = await fetch(`${API_BASE}/api/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        Username: username,
-                        Password: password
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    // 🔥 THIS IS WHERE YOU PUT THE TOKEN
-                    localStorage.setItem("user", username);
-                    localStorage.setItem("token", data.token);
-
-                    window.location.href = data.redirect;
-                } else {
-                    errorBox.style.display = "block";
-                    errorBox.innerText = data.error || "Incorrect username or password.";
-                }
-            } catch (err) {
                 errorBox.style.display = "block";
-                errorBox.innerText = "Failed to reach server.";
-                console.error(err);
+                errorBox.innerText = data.error || "Incorrect username or password.";
             }
-        });
+        } catch (err) {
+            errorBox.style.display = "block";
+            errorBox.innerText = "Failed to reach server.";
+            console.error(err);
+        }
+    });
+</script>
 
-
-    </script>
 
 </body>
 
