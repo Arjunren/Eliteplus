@@ -536,7 +536,7 @@
 
             if (!token || !user) {
                 localStorage.clear();
-                window.location.href = "/login.html";
+                window.location.href = "/";
                 return;
             }
 
@@ -554,12 +554,12 @@
 
                 if (!data.valid) {
                     localStorage.clear();
-                    window.location.href = "/login.html";
+                    window.location.href = "/";
                 }
 
             } catch (err) {
                 localStorage.clear();
-                window.location.href = "/login.html";
+                window.location.href = "/";
             }
         }
 
