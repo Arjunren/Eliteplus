@@ -512,15 +512,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
    <script>
-/* =============================
-      API BASE URL
-============================= */
-const API_BASES = "https://eliteplus.pythonanywhere.com";
 
+const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-/* =============================
-      SINGLE DEVICE LOGIN CHECK
-============================= */
+/* Check auth on page load (run as soon as possible) */
 async function checkAuth() {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
@@ -532,7 +527,7 @@ async function checkAuth() {
     }
 
     try {
-        const res = await fetch(API_BASES + "/api/check", {
+        const res = await fetch(API_BASE + "/api/check", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -544,37 +539,42 @@ async function checkAuth() {
         const data = await res.json();
 
         if (!data.valid) {
+            // invalid or someone else logged in
             localStorage.clear();
+            // show message if desired, then redirect
             window.location.href = "/";
         }
-
     } catch (err) {
-        console.error("Auth error:", err);
+        console.error("Auth check failed:", err);
         localStorage.clear();
         window.location.href = "/";
     }
 }
 
+// call early
+checkAuth();
 
-/* =============================
-      LOGOUT BUTTON
-============================= */
-document.getElementById("logout").addEventListener("click", async () => {
-    const user = localStorage.getItem("user");
+/* Logout button */
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logout");
+    if (!logoutBtn) return;
 
-    await fetch(API_BASES + "/api/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ Username: user })
+    logoutBtn.addEventListener("click", async () => {
+        const user = localStorage.getItem("user");
+        try {
+            await fetch(API_BASE + "/api/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Username: user })
+            });
+        } catch (err) {
+            console.error("Logout request failed:", err);
+        } finally {
+            localStorage.clear();
+            window.location.href = "/";
+        }
     });
-
-    localStorage.clear();
-
-    // FIXED: redirect to actual login page (index.html)
-    window.location.href = "/index.html"; 
-    // or window.location.href = "/";
 });
-
 </script>
 
     <script>
