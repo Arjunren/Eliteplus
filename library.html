@@ -353,7 +353,7 @@ async function checkAuth() {
 
     if (!token || !user) {
         localStorage.clear();
-        window.location.href = "/login.html";
+        window.location.href = "/";
         return;
     }
 
@@ -371,13 +371,13 @@ async function checkAuth() {
 
         if (!data.valid) {
             localStorage.clear();
-            window.location.href = "/login.html";
+            window.location.href = "/";
         }
 
     } catch (err) {
         console.error("Auth error:", err);
         localStorage.clear();
-        window.location.href = "/login.html";
+        window.location.href = "/";
     }
 }
 
