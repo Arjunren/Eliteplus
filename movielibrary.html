@@ -513,15 +513,57 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <script>
-        document.getElementById("logout").addEventListener("click", () => {
-            localStorage.removeItem("loggedIn");
-            window.location.href = "/";
+        document.getElementById("logout").addEventListener("click", async () => {
+            const user = localStorage.getItem("user");
+
+            await fetch(API_BASE + "/api/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Username: user })
+            });
+
+            localStorage.clear();
+            window.location.href = "/login.html";
         });
+
     </script>
     <script>
-        if (localStorage.getItem("loggedIn") !== "true") {
-            window.location.href = "/";
+        const API_BASES = "https://eliteplus.pythonanywhere.com";
+
+        async function checkAuth() {
+            const token = localStorage.getItem("token");
+            const user = localStorage.getItem("user");
+
+            if (!token || !user) {
+                localStorage.clear();
+                window.location.href = "/login.html";
+                return;
+            }
+
+            try {
+                const res = await fetch(API_BASES + "/api/check", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": token
+                    },
+                    body: JSON.stringify({ Username: user })
+                });
+
+                const data = await res.json();
+
+                if (!data.valid) {
+                    localStorage.clear();
+                    window.location.href = "/login.html";
+                }
+
+            } catch (err) {
+                localStorage.clear();
+                window.location.href = "/login.html";
+            }
         }
+
+        checkAuth();
     </script>
 
     <script>
@@ -799,10 +841,6 @@
             loadAll();
         });
     </script>
-
-
-
-
 </body>
 
 </html>
