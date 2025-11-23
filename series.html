@@ -356,7 +356,7 @@
         document.getElementById("logout").addEventListener("click", async () => {
             const user = localStorage.getItem("user");
 
-            await fetch(API_BASE + "/api/logout", {
+            await fetch(API_BASES + "/api/logout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ Username: user })
