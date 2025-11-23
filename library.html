@@ -398,9 +398,11 @@ document.getElementById("logout").addEventListener("click", async () => {
     });
 
     localStorage.clear();
-    window.location.href = "/login.html";
-});
 
+    // FIXED: redirect to actual login page (index.html)
+    window.location.href = "/index.html"; 
+    // or window.location.href = "/";
+});
 
 
 /* =============================
