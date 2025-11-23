@@ -160,25 +160,40 @@
 
 <script>
     const API_BASE = "https://eliteplus.pythonanywhere.com";
+
+    /* -----------------------------------------
+       AUTO LOGIN CHECK
+       If token exists, skip login page
+    ------------------------------------------ */
+    if (localStorage.getItem("token")) {
+        window.location.href = "/library.html";
+    }
+
+    /* -----------------------------------------
+       PASSWORD SHOW/HIDE
+    ------------------------------------------ */
     const passInput = document.getElementById("Password");
     const togglePass = document.getElementById("togglePass");
 
     togglePass.addEventListener("click", () => {
-        if (passInput.type === "password") {
-            passInput.type = "text";
-            togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
-        } else {
-            passInput.type = "password";
-            togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
-        }
+        const isHidden = passInput.type === "password";
+        passInput.type = isHidden ? "text" : "password";
+        togglePass.innerHTML = isHidden
+            ? '<i class="ri-eye-fill"></i>'
+            : '<i class="ri-eye-off-fill"></i>';
     });
+
+    /* -----------------------------------------
+       LOGIN FORM SUBMIT
+    ------------------------------------------ */
     document.querySelector("form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        const username = document.getElementById("Username").value;
-        const password = document.getElementById("Password").value;
+        const username = document.getElementById("Username").value.trim();
+        const password = document.getElementById("Password").value.trim();
         const errorBox = document.getElementById("errorBox");
 
+        // Reset error box
         errorBox.style.display = "none";
         errorBox.innerText = "";
 
@@ -195,11 +210,11 @@
             const data = await response.json();
 
             if (data.success) {
-                // SAVE LOGIN SESSION
+                // Save session in localStorage
                 localStorage.setItem("user", username);
                 localStorage.setItem("token", data.token);
 
-                // REDIRECT TO YOUR PAGE (library.html)
+                // Redirect after successful login
                 window.location.href = "/library.html";
             } else {
                 errorBox.style.display = "block";
@@ -208,10 +223,11 @@
         } catch (err) {
             errorBox.style.display = "block";
             errorBox.innerText = "Failed to reach server.";
-            console.error(err);
+            console.error("Login Error:", err);
         }
     });
 </script>
+
 
 
 </body>
