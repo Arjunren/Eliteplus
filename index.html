@@ -1,23 +1,8 @@
-<script>
-    window.onpageshow = function (event) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    };
-    if (localStorage.getItem("token") && localStorage.getItem("user")) {
-        window.location.href = "/library.html";
-    }
-</script>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
@@ -173,79 +158,70 @@
 
     </form>
 
-    <script>
-        const API_BASE = "https://eliteplus.pythonanywhere.com";
+<script>
+    const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-        /* =============================
-              BLOCK BACK BUTTON LOGIN PAGE
-        ============================== */
-        // If already logged in → redirect to library.html
-        const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
+    /* =============================
+          PASSWORD TOGGLE
+    ============================== */
+    const passInput = document.getElementById("Password");
+    const togglePass = document.getElementById("togglePass");
 
-        if (token && user) {
-            window.location.replace("/library.html");
-            // use replace() so browser back button WON'T return to index.html
+    togglePass.addEventListener("click", () => {
+        if (passInput.type === "password") {
+            passInput.type = "text";
+            togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
+        } else {
+            passInput.type = "password";
+            togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
         }
+    });
 
-        /* =============================
-              PASSWORD TOGGLE
-        ============================== */
-        const passInput = document.getElementById("Password");
-        const togglePass = document.getElementById("togglePass");
+    /* =============================
+          LOGIN LOGIC
+    ============================== */
+    document.querySelector("form").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-        togglePass.addEventListener("click", () => {
-            if (passInput.type === "password") {
-                passInput.type = "text";
-                togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
+        const username = document.getElementById("Username").value;
+        const password = document.getElementById("Password").value;
+        const errorBox = document.getElementById("errorBox");
+
+        errorBox.style.display = "none";
+        errorBox.innerText = "";
+
+        try {
+            const response = await fetch(`${API_BASE}/api/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Username: username,
+                    Password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // SAVE LOGIN SESSION
+                localStorage.setItem("user", username);
+                localStorage.setItem("token", data.token);
+
+                // REDIRECT TO YOUR PAGE (library.html)
+                window.location.href = "/library.html";
             } else {
-                passInput.type = "password";
-                togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
-            }
-        });
-
-        /* =============================
-              LOGIN LOGIC
-        ============================== */
-        document.querySelector("form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const username = document.getElementById("Username").value;
-            const password = document.getElementById("Password").value;
-            const errorBox = document.getElementById("errorBox");
-
-            errorBox.style.display = "none";
-            errorBox.innerText = "";
-
-            try {
-                const response = await fetch(`${API_BASE}/api/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        Username: username,
-                        Password: password
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    localStorage.setItem("user", username);
-                    localStorage.setItem("token", data.token);
-
-                    window.location.replace("/library.html");
-                    // use replace() to remove login page from history
-                } else {
-                    errorBox.style.display = "block";
-                    errorBox.innerText = data.error || "Incorrect username or password.";
-                }
-            } catch (err) {
                 errorBox.style.display = "block";
-                errorBox.innerText = "Failed to reach server.";
-                console.error(err);
+                errorBox.innerText = data.error || "Incorrect username or password.";
             }
-        });
-    </script>
+        } catch (err) {
+            errorBox.style.display = "block";
+            errorBox.innerText = "Failed to reach server.";
+            console.error(err);
+        }
+    });
+</script>
+
+
 </body>
 
 </html>
