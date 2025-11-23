@@ -341,7 +341,10 @@ document.querySelectorAll('.nav-link').forEach(n => n.addEventListener("click", 
 /* =============================
       API BASE URL
 ============================= */
-const API_BASE = "https://eliteplus.pythonanywhere.com";
+/* =============================
+      API BASE URL
+============================= */
+const API_BASES = "https://eliteplus.pythonanywhere.com";
 
 
 /* =============================
@@ -358,14 +361,13 @@ async function checkAuth() {
     }
 
     try {
-        const res = await fetch(API_BASE + "/api/check", {
+        const res = await fetch(API_BASES + "/api/check", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": token,
-                "Username": user
+                "Authorization": token
             },
-            body: "{}"
+            body: JSON.stringify({ Username: user })
         });
 
         const data = await res.json();
@@ -381,9 +383,6 @@ async function checkAuth() {
         window.location.href = "/";
     }
 }
-
-// Run on page load
-checkAuth();
 
 
 /* =============================
