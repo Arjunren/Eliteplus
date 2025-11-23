@@ -1,11 +1,8 @@
 <script>
-    // Check if user is logged in
     if (localStorage.getItem("loggedIn") !== "true") {
-        // Not logged in, redirect to login page
         window.location.href = "/";
     }
 </script>
-<!-- Full Series Page (matching Movie Page design) -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -339,37 +336,6 @@
         const API_BASE = "https://eliteplus.pythonanywhere.com";
         const urlParams = new URLSearchParams(window.location.search);
         const tvId = urlParams.get("id");
-
-        async function checkAuth() {
-            const token = localStorage.getItem("token");
-            const user = localStorage.getItem("user");
-
-            if (!token || !user) {
-                // No login data at all
-                window.location.href = "/login.html";
-                return;
-            }
-
-            const res = await fetch(API_BASE + "/api/check", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": token
-                },
-                body: JSON.stringify({ Username: user })
-            });
-
-            const data = await res.json();
-
-            if (!data.valid) {
-                // Token invalid or logged in somewhere else
-                localStorage.clear();
-                window.location.href = "/login.html";
-            }
-        }
-
-        // Run on page load
-        checkAuth();
 
         const tvNameEl = document.getElementById("tvName");
         const tvOverviewEl = document.getElementById("tvOverview");

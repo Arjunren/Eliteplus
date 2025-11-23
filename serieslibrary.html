@@ -542,36 +542,6 @@
             // ---------- GLOBALS ----------
             const API_BASE = "https://eliteplus.pythonanywhere.com";
             let SERIES_CACHE = {};
-            async function checkAuth() {
-                const token = localStorage.getItem("token");
-                const user = localStorage.getItem("user");
-
-                if (!token || !user) {
-                    // No login data at all
-                    window.location.href = "/login.html";
-                    return;
-                }
-
-                const res = await fetch(API_BASE + "/api/check", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": token
-                    },
-                    body: JSON.stringify({ Username: user })
-                });
-
-                const data = await res.json();
-
-                if (!data.valid) {
-                    // Token invalid or logged in somewhere else
-                    localStorage.clear();
-                    window.location.href = "/login.html";
-                }
-            }
-
-            // Run on page load
-            checkAuth();
 
             // ---------- SEARCH UI SETUP ----------
             const searchForm = document.getElementById("searchForm");
