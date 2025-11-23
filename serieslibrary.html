@@ -57,7 +57,7 @@
             width: 100%;
         }
 
-         .Nav-Item {
+        .Nav-Item {
             margin: 0 1px 0 10px;
         }
 
@@ -124,7 +124,7 @@
             .Nav-Menu.active {
                 left: 0;
             }
-            
+
         }
 
         .Nav-Item a::after {
@@ -434,6 +434,11 @@
                 font-size: 18px;
             }
 
+            .swiper:hover .swiper-button-next,
+            .swiper:hover .swiper-button-prev {
+                display: none;
+            }
+
         }
     </style>
 </head>
@@ -514,13 +519,13 @@
         });
     </script>
 
-<script>
-    // Check if user is logged in
-    if (localStorage.getItem("loggedIn") !== "true") {
-        // Not logged in, redirect to login page
-        window.location.href = "/";
-    }
-</script>
+    <script>
+        // Check if user is logged in
+        if (localStorage.getItem("loggedIn") !== "true") {
+            // Not logged in, redirect to login page
+            window.location.href = "/";
+        }
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
