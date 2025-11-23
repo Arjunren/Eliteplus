@@ -327,12 +327,21 @@
     </div>
 
 
-    <script>
-        document.getElementById("logout").addEventListener("click", () => {
-            localStorage.removeItem("loggedIn");
-            window.location.href = "/";
-        });
-    </script>
+<script>
+document.getElementById("logout").addEventListener("click", async () => {
+    const user = localStorage.getItem("user");
+
+    await fetch(API_BASE + "/api/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Username: user })
+    });
+
+    localStorage.clear();
+    window.location.href = "/login.html";
+});
+</script>
+
 
 
     <script>
