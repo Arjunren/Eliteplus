@@ -362,9 +362,10 @@ async function checkAuth() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": token
+                "Authorization": token,
+                "Username": user
             },
-            body: JSON.stringify({ Username: user })
+            body: "{}"
         });
 
         const data = await res.json();

@@ -160,10 +160,6 @@
 
 <script>
     const API_BASE = "https://eliteplus.pythonanywhere.com";
-
-    /* =============================
-          PASSWORD TOGGLE
-    ============================== */
     const passInput = document.getElementById("Password");
     const togglePass = document.getElementById("togglePass");
 
@@ -176,10 +172,6 @@
             togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
         }
     });
-
-    /* =============================
-          LOGIN LOGIC
-    ============================== */
     document.querySelector("form").addEventListener("submit", async (e) => {
         e.preventDefault();
 
