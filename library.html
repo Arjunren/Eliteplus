@@ -338,16 +338,22 @@ document.querySelectorAll('.nav-link').forEach(n => n.addEventListener("click", 
 }));
 
 
+/* =============================
+      API BASE URL
+============================= */
 const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-/* Check auth on page load (run as soon as possible) */
+
+/* =============================
+      SINGLE DEVICE LOGIN CHECK
+============================= */
 async function checkAuth() {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
 
     if (!token || !user) {
         localStorage.clear();
-        window.location.href = "/";
+        window.location.href = "/login.html";
         return;
     }
 
@@ -364,41 +370,38 @@ async function checkAuth() {
         const data = await res.json();
 
         if (!data.valid) {
-            // invalid or someone else logged in
             localStorage.clear();
-            // show message if desired, then redirect
-            window.location.href = "/";
+            window.location.href = "/login.html";
         }
+
     } catch (err) {
-        console.error("Auth check failed:", err);
+        console.error("Auth error:", err);
         localStorage.clear();
-        window.location.href = "/";
+        window.location.href = "/login.html";
     }
 }
 
-// call early
+// Run on page load
 checkAuth();
 
-/* Logout button */
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logout");
-    if (!logoutBtn) return;
 
-    logoutBtn.addEventListener("click", async () => {
-        const user = localStorage.getItem("user");
-        try {
-            await fetch(API_BASE + "/api/logout", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ Username: user })
-            });
-        } catch (err) {
-            console.error("Logout request failed:", err);
-        } finally {
-            localStorage.clear();
-            window.location.href = "/";
-        }
+/* =============================
+      LOGOUT BUTTON
+============================= */
+document.getElementById("logout").addEventListener("click", async () => {
+    const user = localStorage.getItem("user");
+
+    await fetch(API_BASE + "/api/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ Username: user })
     });
+
+    localStorage.clear();
+
+    // FIXED: redirect to actual login page (index.html)
+    window.location.href = "/index.html"; 
+    // or window.location.href = "/";
 });
 
 

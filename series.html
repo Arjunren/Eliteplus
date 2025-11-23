@@ -307,68 +307,68 @@
     </footer>
     <script>
 
-        const API_BASES = "https://eliteplus.pythonanywhere.com";
+const API_BASES = "https://eliteplus.pythonanywhere.com";
 
-        /* Check auth on page load (run as soon as possible) */
-        async function checkAuth() {
-            const token = localStorage.getItem("token");
-            const user = localStorage.getItem("user");
+/* Check auth on page load (run as soon as possible) */
+async function checkAuth() {
+    const token = localStorage.getItem("token");
+    const user = localStorage.getItem("user");
 
-            if (!token || !user) {
-                localStorage.clear();
-                window.location.href = "/";
-                return;
-            }
+    if (!token || !user) {
+        localStorage.clear();
+        window.location.href = "/";
+        return;
+    }
 
-            try {
-                const res = await fetch(API_BASES + "/api/check", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": token
-                    },
-                    body: JSON.stringify({ Username: user })
-                });
-
-                const data = await res.json();
-
-                if (!data.valid) {
-                    // invalid or someone else logged in
-                    localStorage.clear();
-                    // show message if desired, then redirect
-                    window.location.href = "/";
-                }
-            } catch (err) {
-                console.error("Auth check failed:", err);
-                localStorage.clear();
-                window.location.href = "/";
-            }
-        }
-
-        // call early
-        checkAuth();
-
-        /* Logout button */
-        document.addEventListener("DOMContentLoaded", () => {
-            const logoutBtn = document.getElementById("logout");
-            if (!logoutBtn) return;
-
-            logoutBtn.addEventListener("click", async () => {
-                const user = localStorage.getItem("user");
-                try {
-                    await fetch(API_BASES + "/api/logout", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ Username: user })
-                    });
-                } catch (err) {
-                    console.error("Logout request failed:", err);
-                } finally {
-                    localStorage.clear();
-                    window.location.href = "/";
-                }
-            });
+    try {
+        const res = await fetch(API_BASES + "/api/check", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": token
+            },
+            body: JSON.stringify({ Username: user })
         });
+
+        const data = await res.json();
+
+        if (!data.valid) {
+            // invalid or someone else logged in
+            localStorage.clear();
+            // show message if desired, then redirect
+            window.location.href = "/";
+        }
+    } catch (err) {
+        console.error("Auth check failed:", err);
+        localStorage.clear();
+        window.location.href = "/";
+    }
+}
+
+// call early
+checkAuth();
+
+/* Logout button */
+document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logout");
+    if (!logoutBtn) return;
+
+    logoutBtn.addEventListener("click", async () => {
+        const user = localStorage.getItem("user");
+        try {
+            await fetch(API_BASES + "/api/logout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ Username: user })
+            });
+        } catch (err) {
+            console.error("Logout request failed:", err);
+        } finally {
+            localStorage.clear();
+            window.location.href = "/";
+        }
+    });
+});
     </script>
     <script>
         // ========== NAV MENU ==========

@@ -173,77 +173,79 @@
 
     </form>
 
-<script>
-const API_BASE = "https://eliteplus.pythonanywhere.com";
+    <script>
+        const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-/* Prevent cached back-navigation showing protected page */
-window.onpageshow = function(event) {
-    if (event.persisted) {
-        window.location.reload();
-    }
-};
+        /* =============================
+              BLOCK BACK BUTTON LOGIN PAGE
+        ============================== */
+        // If already logged in → redirect to library.html
+        const token = localStorage.getItem("token");
+        const user = localStorage.getItem("user");
 
-// If already logged in -> go to library
-if (localStorage.getItem("token") && localStorage.getItem("user")) {
-    window.location.href = "/library.html";
-}
+        if (token && user) {
+            window.location.replace("/library.html");
+            // use replace() so browser back button WON'T return to index.html
+        }
 
-/* Password toggle (if present) */
-const passInput = document.getElementById("Password");
-const togglePass = document.getElementById("togglePass");
-if (passInput && togglePass) {
-    togglePass.addEventListener("click", () => {
-        passInput.type = passInput.type === "password" ? "text" : "password";
-        togglePass.innerHTML = passInput.type === "password" ? '<i class="ri-eye-off-fill"></i>' : '<i class="ri-eye-fill"></i>';
-    });
-}
+        /* =============================
+              PASSWORD TOGGLE
+        ============================== */
+        const passInput = document.getElementById("Password");
+        const togglePass = document.getElementById("togglePass");
 
-/* Login form submit */
-document.querySelector("form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const username = document.getElementById("Username").value;
-    const password = document.getElementById("Password").value;
-    const errorBox = document.getElementById("errorBox");
-
-    if (errorBox) { errorBox.style.display = "none"; errorBox.innerText = ""; }
-
-    try {
-        const res = await fetch(`${API_BASE}/api/login`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Username: username, Password: password })
+        togglePass.addEventListener("click", () => {
+            if (passInput.type === "password") {
+                passInput.type = "text";
+                togglePass.innerHTML = '<i class="ri-eye-fill"></i>';
+            } else {
+                passInput.type = "password";
+                togglePass.innerHTML = '<i class="ri-eye-off-fill"></i>';
+            }
         });
 
-        const data = await res.json();
+        /* =============================
+              LOGIN LOGIC
+        ============================== */
+        document.querySelector("form").addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        if (data.success) {
-            localStorage.setItem("user", username);
-            localStorage.setItem("token", data.token);
+            const username = document.getElementById("Username").value;
+            const password = document.getElementById("Password").value;
+            const errorBox = document.getElementById("errorBox");
 
-            // use redirect from backend if present
-            const redirect = data.redirect || "/library.html";
-            window.location.href = redirect;
-        } else {
-            if (errorBox) {
+            errorBox.style.display = "none";
+            errorBox.innerText = "";
+
+            try {
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        Username: username,
+                        Password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem("user", username);
+                    localStorage.setItem("token", data.token);
+
+                    window.location.replace("/library.html");
+                    // use replace() to remove login page from history
+                } else {
+                    errorBox.style.display = "block";
+                    errorBox.innerText = data.error || "Incorrect username or password.";
+                }
+            } catch (err) {
                 errorBox.style.display = "block";
-                errorBox.innerText = data.error || "Incorrect username or password.";
-            } else {
-                alert(data.error || "Incorrect username or password.");
+                errorBox.innerText = "Failed to reach server.";
+                console.error(err);
             }
-        }
-    } catch (err) {
-        if (errorBox) {
-            errorBox.style.display = "block";
-            errorBox.innerText = "Failed to reach server.";
-        } else {
-            alert("Failed to reach server.");
-        }
-        console.error(err);
-    }
-});
-</script>
-
+        });
+    </script>
 </body>
 
 </html>
