@@ -329,10 +329,12 @@
                 const res = await fetch(API_BASES + "/api/check", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": token
+                        "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({ Username: user })
+                    body: JSON.stringify({
+                        Username: user,
+                        Token: token
+                    })
                 });
 
                 const data = await res.json();
@@ -343,7 +345,6 @@
                 }
 
             } catch (err) {
-                console.error("Auth error:", err);
                 localStorage.clear();
                 window.location.href = "/";
             }
@@ -363,12 +364,10 @@
             });
 
             localStorage.clear();
-
-            // FIXED: redirect to actual login page (index.html)
             window.location.href = "/index.html";
-            // or window.location.href = "/";
         });
 
+        checkAuth();
     </script>
     <script>
         // ========== NAV MENU ==========
