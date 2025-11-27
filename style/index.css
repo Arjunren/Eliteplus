@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght@0,300..800;1,300..800&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #111;
+    height: 100dvh;
+}
+
+form {
+    width: 360px;
+    background-color: #fff;
+    padding: 1.3rem;
+    border-radius: 20px;
+}
+
+form legend {
+    text-align: center;
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #111;
+}
+
+.det-container,
+.jstfy {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.det-container>input {
+    width: 100%;
+    height: 43px;
+    font-family: 'poppins';
+    font-size: 17px;
+    padding: 0px 10px;
+    outline: none;
+    background-color: #e9e9e9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: all ease .4s;
+}
+
+.det-container input:focus {
+    border-color: #111;
+}
+
+.pass {
+    width: 100%;
+    height: 43px;
+    font-family: 'poppins';
+    font-size: 17px;
+    padding: 0px 10px;
+    outline: none;
+    background-color: #e9e9e9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    transition: all ease .4s;
+}
+
+.pass:focus {
+    border-color: #111;
+}
+
+.det-container label {
+    cursor: pointer;
+    width: fit-content;
+    color: #111;
+}
+
+#forgot-pass {
+    width: fit-content;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.loginBtn {
+    cursor: pointer;
+    width: 100%;
+    height: 43px;
+    background-color: #fff;
+    font-size: 14px;
+    color: #111;
+    font-weight: bold;
+    border: 1px solid #111;
+    border-radius: 5px;
+    transition: all 0.5ms ease;
+}
+
+.loginBtn:hover {
+    color: #fff;
+    background-color: #111;
+    border: 1px solid #fff;
+}
+
+#errorBox {
+    display: none;
+    background: #ffdddd;
+    color: #d00000;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 14px;
+    border: 1px solid #d00000;
+}
