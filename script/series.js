@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    seasonSelect.addEventListener("change", showEpisodes);
     const Hamburger = document.querySelector('.Hamburger');
     const NavMenu = document.querySelector('.Nav-Menu');
 
@@ -24,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const seasonSelect = document.getElementById("seasonSelect");
     const episodesDiv = document.getElementById("episodes");
     const playerDiv = document.getElementById("player");
-
+    seasonSelect.addEventListener("change", showEpisodes);
     let seasonsData = [];
 
     if (!tvId) {
