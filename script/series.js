@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    seasonSelect.addEventListener("change", showEpisodes);
     const Hamburger = document.querySelector('.Hamburger');
     const NavMenu = document.querySelector('.Nav-Menu');
 
