@@ -14,39 +14,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const API_BASE = "https://eliteplus.pythonanywhere.com";
 
-    async function checkAuth() {
-        const token = localStorage.getItem("token");
-        const user = localStorage.getItem("user");
+    document.getElementById("logout").addEventListener("click", async () => {
+    const username = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
 
-        if (!token || !user) {
-            localStorage.clear();
-            window.location.href = "/";
-            return;
-        }
+    await fetch(API_BASE + "/api/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            Username: username,
+            Token: token
+        })
+    });
 
-        try {
-            const res = await fetch(API_BASE + "/api/check", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    Username: user,
-                    Token: token
-                })
-            });
+    localStorage.clear();
+    window.location.href = "/";
+});
 
-            const data = await res.json();
-
-            if (!data.valid) {
-                localStorage.clear();
-                window.location.href = "/";
-            }
-
-        } catch (err) {
-            console.error("Auth error:", err);
-            localStorage.clear();
-            window.location.href = "/";
-        }
-    }
 
     document.getElementById("logout").addEventListener("click", async () => {
         const user = localStorage.getItem("user");
