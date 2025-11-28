@@ -28,36 +28,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!tvId) {
         document.body.innerHTML = "<h2>TV Series ID is required!</h2>";
-    } else {
-        fetch(`${API_BASE}/api/series?id=${tvId}`)
-            .then(res => res.json())
-            .then(data => {
-                tvNameEl.textContent = data.name;
-                tvOverviewEl.textContent = data.overview || "No overview available.";
-
-                document.getElementById("genres").textContent = data.genres?.join(", ") || "Unknown";
-                document.getElementById("actors").textContent = data.cast?.slice(0, 5).join(", ") || "Unknown";
-                document.getElementById("creator").textContent = data.creator || "Unknown";
-                document.getElementById("country").textContent = data.country || "—";
-                document.getElementById("rating").textContent = data.vote_average ? data.vote_average + "/10" : "—";
-                document.getElementById("release").textContent = data.first_air_date || "—";
-
-                seasonsData = data.seasons_data || [];
-
-                seasonSelect.innerHTML = '';
-                seasonsData.forEach(s => {
-                    const opt = document.createElement("option");
-                    opt.value = s.season_number;
-                    opt.textContent = `Season ${s.season_number}`;
-                    seasonSelect.appendChild(opt);
-                });
-
-                showEpisodes();
-            })
-            .catch(err => {
-                document.body.innerHTML = `<h2>Error loading series<br>${err}</h2>`;
-            });
+        return;
     }
+
+    fetch(`${API_BASE}/api/series?id=${tvId}`)
+        .then(res => res.json())
+        .then(data => {
+            tvNameEl.textContent = data.name;
+            tvOverviewEl.textContent = data.overview || "No overview available.";
+
+            document.getElementById("genres").textContent = data.genres?.join(", ") || "Unknown";
+            document.getElementById("actors").textContent = data.cast?.slice(0, 5).join(", ") || "Unknown";
+            document.getElementById("creator").textContent = data.creator || "Unknown";
+            document.getElementById("country").textContent = data.country || "—";
+            document.getElementById("rating").textContent = data.vote_average ? data.vote_average + "/10" : "—";
+            document.getElementById("release").textContent = data.first_air_date || "—";
+
+            seasonsData = data.seasons_data || [];
+
+            seasonSelect.innerHTML = '';
+            seasonsData.forEach(s => {
+                const opt = document.createElement("option");
+                opt.value = s.season_number;
+                opt.textContent = `Season ${s.season_number}`;
+                seasonSelect.appendChild(opt);
+            });
+
+            showEpisodes();
+        })
+        .catch(err => {
+            document.body.innerHTML = `<h2>Error loading series<br>${err}</h2>`;
+        });
 
     function showEpisodes() {
         const seasonNumber = Number(seasonSelect.value);
@@ -83,4 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
             <iframe src="https://vidlink.pro/tv/${id}/${season}/${episode}" allowfullscreen allow="encrypted-media"></iframe>
         `;
     }
+
+    window.showEpisodes = showEpisodes;
 });
