@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
             NavMenu.classList.remove('active');
         })
     );
+
     const API_BASE = "https://eliteplus.pythonanywhere.com";
     const urlParams = new URLSearchParams(window.location.search);
     const tvId = urlParams.get("id");
@@ -44,9 +45,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 seasonsData = data.seasons_data || [];
 
                 seasonSelect.innerHTML = '';
-                seasonsData.forEach((s, i) => {
+                seasonsData.forEach(s => {
                     const opt = document.createElement("option");
-                    opt.value = i;
+                    opt.value = s.season_number;
                     opt.textContent = `Season ${s.season_number}`;
                     seasonSelect.appendChild(opt);
                 });
@@ -59,10 +60,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function showEpisodes() {
-        const idx = seasonSelect.value;
-        const season = seasonsData[idx];
-        episodesDiv.innerHTML = '';
+        const seasonNumber = Number(seasonSelect.value);
+        const season = seasonsData.find(s => s.season_number === seasonNumber);
 
+        episodesDiv.innerHTML = '';
         if (!season) return;
 
         season.episodes.forEach(ep => {
@@ -79,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function playEpisode(id, season, episode) {
         playerDiv.innerHTML = `
-                <iframe src="https://vidlink.pro/tv/${id}/${season}/${episode}" allowfullscreen allow="encrypted-media"></iframe>
-            `;
+            <iframe src="https://vidlink.pro/tv/${id}/${season}/${episode}" allowfullscreen allow="encrypted-media"></iframe>
+        `;
     }
 });
