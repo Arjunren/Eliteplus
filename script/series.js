@@ -23,8 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const seasonSelect = document.getElementById("seasonSelect");
     const episodesDiv = document.getElementById("episodes");
     const playerDiv = document.getElementById("player");
+    const seasonInfoEl = document.getElementById("Season");
+    const episodeInfoEl = document.getElementById("Episode");
+
     seasonSelect.addEventListener("change", showEpisodes);
+
     let seasonsData = [];
+    let currentSeason = null;
+    let currentEpisode = null;
 
     if (!tvId) {
         document.body.innerHTML = "<h2>TV Series ID is required!</h2>";
@@ -36,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
         .then(data => {
             tvNameEl.textContent = data.name;
             tvOverviewEl.textContent = data.overview || "No overview available.";
-
             document.getElementById("genres").textContent = data.genres?.join(", ") || "Unknown";
             document.getElementById("actors").textContent = data.cast?.slice(0, 5).join(", ") || "Unknown";
             document.getElementById("creator").textContent = data.creator || "Unknown";
@@ -44,9 +49,9 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("rating").textContent = data.vote_average ? data.vote_average + "/10" : "—";
             document.getElementById("release").textContent = data.first_air_date || "—";
 
-            seasonsData = data.seasons_data || [];
-
+            seasonsData = data.seasons_data?.filter(s => s.season_number >= 1) || [];
             seasonSelect.innerHTML = '';
+
             seasonsData.forEach(s => {
                 const opt = document.createElement("option");
                 opt.value = s.season_number;
@@ -54,6 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 seasonSelect.appendChild(opt);
             });
 
+            seasonSelect.value = 1;
             showEpisodes();
         })
         .catch(err => {
@@ -63,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function showEpisodes() {
         const seasonNumber = Number(seasonSelect.value);
         const season = seasonsData.find(s => s.season_number === seasonNumber);
-
         episodesDiv.innerHTML = '';
         if (!season) return;
 
@@ -80,9 +85,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function playEpisode(id, season, episode) {
+        currentSeason = season;
+        currentEpisode = episode;
+
+        const seasonData = seasonsData.find(s => s.season_number === season);
+        const episodeData = seasonData?.episodes.find(e => e.episode_number === episode);
+
+        seasonInfoEl.textContent = `Season ${season}`;
+        episodeInfoEl.textContent = episodeData
+            ? `Episode ${episode} — ${episodeData.name}`
+            : `Episode ${episode}`;
+
         playerDiv.innerHTML = `
-            <iframe src="https://vidlink.pro/tv/${id}/${season}/${episode}" allowfullscreen allow="encrypted-media"></iframe>
-        `;
+<iframe
+    src="https://vidlink.pro/tv/${id}/${season}/${episode}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&autoplay=true&nextbutton=true&startAt=60&player=jw&title=true&poster=true&mute=false"
+    allowfullscreen>
+</iframe>
+
+`;
+
+
     }
 
     window.showEpisodes = showEpisodes;
