@@ -46,7 +46,7 @@
 
 <body class="bg-brand-dark text-slate-200 font-sans min-h-screen flex flex-col">
 
-    <header class="fixed top-0 w-full z-40 bg-brand-dark/80 backdrop-blur-md border-b border-white/5 transition-all duration-300">
+    <header class="fixed top-0 w-full z-40 bg-brand-dark/90 backdrop-blur-md border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             
             <a href="#" class="text-3xl font-black tracking-wider text-white hover:opacity-80 transition-opacity">
@@ -68,19 +68,19 @@
             </button>
         </div>
 
-        <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-b border-slate-800">
+        <div id="mobileMenu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 absolute w-full left-0 top-20">
             <div class="flex flex-col p-4 space-y-4">
                 <a href="library.html" class="text-brand-neon font-medium">Home</a>
                 <a href="movielibrary.html" class="text-slate-300 hover:text-white font-medium">Movies</a>
                 <a href="serieslibrary.html" class="text-slate-300 hover:text-white font-medium">Series</a>
-                <a href="#" class="text-red-400 hover:text-red-300 font-medium">Logout</a>
+                <button id="logoutMobile" class="text-red-400 hover:text-red-300 font-medium text-left">Logout</button>
             </div>
         </div>
     </header>
 
     <main class="flex-grow pt-32 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full">
 
-        <div class="flex flex-col items-center text-center space-y-6 mb-16 animate-fade-in">
+        <div class="flex flex-col items-center text-center space-y-6 mb-16 animate-fade-in relative">
             <div class="absolute top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-brand-neon opacity-10 blur-[100px] pointer-events-none"></div>
 
             <h1 class="text-4xl md:text-5xl font-extrabold text-white relative z-10">
@@ -94,7 +94,7 @@
             <form id="searchForm" class="relative w-full max-w-lg mt-4 group z-10">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <i class="ri-search-line text-slate-500 group-focus-within:text-brand-neon transition-colors text-xl"></i>
-                </div>`
+                </div>
                 <input 
                     type="text" 
                     id="query" 
@@ -109,7 +109,7 @@
             <div>
                 <div class="flex items-center gap-3 mb-6">
                     <div class="h-8 w-1 bg-brand-neon rounded-full"></div>
-                    <h2 class="text-2xl font-bold text-white">Trending</h2>
+                    <h2 class="text-2xl font-bold text-white">Trending Movies</h2>
                 </div>
                 
                 <div id="moviesLibrary" class="library grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
@@ -117,23 +117,28 @@
             </div>
 
             <div>
-                <div id="tvLibrary" class="library grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6"></div>
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="h-8 w-1 bg-brand-neon rounded-full"></div>
+                    <h2 class="text-2xl font-bold text-white">Trending Series</h2>
+                </div>
+                <div id="tvLibrary" class="library grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                     </div>
             </div>
             
         </section>
 
     </main>
 
-    <div id="Modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm items-center justify-center p-4 transition-opacity duration-300">
+    <div id="Modal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-sm items-center justify-center p-4 transition-opacity duration-300 flex">
         
         <div class="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
             
-            <div class="relative md:w-2/5 h-64 md:h-auto bg-black shrink-0">
-                <img id="modalPoster" class="w-full h-full object-cover opacity-90" src="" alt="Poster">
+            <div class="relative md:w-2/5 h-64 md:h-auto bg-black shrink-0 group">
+                <img id="modalPoster" class="w-full h-full object-cover opacity-90 transition-opacity" src="" alt="Poster">
                 <iframe id="modalTrailer" class="absolute inset-0 w-full h-full hidden" allow="autoplay; encrypted-media"></iframe>
                 
-                <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <i class="ri-play-circle-line text-6xl text-white/80 drop-shadow-lg"></i>
+                <div id="playIconOverlay" class="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform">
+                    <i class="ri-play-circle-line text-6xl text-brand-neon drop-shadow-lg opacity-80"></i>
                 </div>
             </div>
 
@@ -157,6 +162,210 @@
         </div>
     </div>
 
-    <script src="./script/library.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            
+            // --- 1. Mobile Menu Logic ---
+            const mobileBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuIcon = mobileBtn.querySelector('i');
+
+            mobileBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                // Toggle icon
+                if (mobileMenu.classList.contains('hidden')) {
+                    menuIcon.classList.remove('ri-close-line');
+                    menuIcon.classList.add('ri-menu-4-line');
+                } else {
+                    menuIcon.classList.remove('ri-menu-4-line');
+                    menuIcon.classList.add('ri-close-line');
+                }
+            });
+
+            // --- 2. Auth & Logout Logic ---
+            const API_BASE = "https://eliteplus.pythonanywhere.com";
+
+            // Simple Auth Check
+            function checkAuth() {
+                const token = localStorage.getItem("token");
+                // If you want to force login:
+                // if (!token) window.location.href = "/index.html";
+            }
+
+            async function handleLogout() {
+                const username = localStorage.getItem("user");
+                const token = localStorage.getItem("token");
+
+                if (username) {
+                    try {
+                        await fetch(API_BASE + "/api/logout", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ Username: username, Token: token })
+                        });
+                    } catch (e) {
+                        console.error("Logout error", e);
+                    }
+                }
+
+                localStorage.clear();
+                window.location.href = "/index.html"; // Ensure this path is correct
+            }
+
+            // Attach to Desktop Logout
+            const logoutBtn = document.getElementById("logout");
+            if(logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+            
+            // Attach to Mobile Logout (if exists)
+            const mobileLogout = document.getElementById("logoutMobile");
+            if(mobileLogout) mobileLogout.addEventListener("click", handleLogout);
+
+
+            // --- 3. Library Fetching Logic ---
+            const moviesLibrary = document.getElementById('moviesLibrary');
+            const tvLibrary = document.getElementById('tvLibrary');
+            const queryInput = document.getElementById('query');
+            const form = document.getElementById('searchForm');
+
+            async function fetchMovies(query = "") {
+                try {
+                    const url = query
+                        ? `${API_BASE}/api/movies?query=${encodeURIComponent(query)}`
+                        : `${API_BASE}/api/movies`;
+
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    renderLibrary(data.movies || [], moviesLibrary, "movie");
+                } catch (e) {
+                    console.error(e);
+                    moviesLibrary.innerHTML = "<p class='text-red-400 col-span-full text-center'>Failed to load movies.</p>";
+                }
+            }
+
+            async function fetchTV(query = "") {
+                try {
+                    const url = query
+                        ? `${API_BASE}/api/tv?query=${encodeURIComponent(query)}`
+                        : `${API_BASE}/api/tv`;
+
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    renderLibrary(data.tv_shows || [], tvLibrary, "tv");
+                } catch (e) {
+                    console.error(e);
+                    tvLibrary.innerHTML = "<p class='text-red-400 col-span-full text-center'>Failed to load series.</p>";
+                }
+            }
+
+            // --- 4. Render with Tailwind Classes ---
+            function renderLibrary(items, container, type) {
+                container.innerHTML = "";
+                items.forEach(item => {
+                    if (!item.poster) return;
+
+                    const div = document.createElement('div');
+                    // Add Tailwind styling classes to the card wrapper
+                    div.className = "relative group cursor-pointer overflow-hidden rounded-xl shadow-lg transition-transform duration-300 hover:scale-105 hover:shadow-cyan-500/20 bg-slate-800 border border-slate-700";
+                    
+                    div.innerHTML = `
+                        <img src="${item.poster}" loading="lazy" class="w-full h-full object-cover aspect-[2/3]">
+                        <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <i class="ri-play-circle-fill text-4xl text-brand-neon"></i>
+                        </div>
+                    `;
+                    div.onclick = () => showModal(item, type);
+                    container.appendChild(div);
+                });
+            }
+
+            // --- 5. Modal Logic ---
+            const modal = document.getElementById('Modal');
+            const modalClose = document.getElementById('ModalClose');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalPoster = document.getElementById('modalPoster');
+            const modalOverview = document.getElementById('modalOverview');
+            const modalTrailer = document.getElementById('modalTrailer');
+            const detailsLink = document.getElementById('detailsLink');
+            const playIconOverlay = document.getElementById('playIconOverlay');
+
+            let trailerTimeout;
+
+            async function fetchTrailer(id, type) {
+                try {
+                    const url = `${API_BASE}/api/trailer?id=${id}&type=${type}`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+
+                    if (data.youtube_key) {
+                        return `https://www.youtube.com/embed/${data.youtube_key}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0`;
+                    }
+                    return null;
+                } catch {
+                    return null;
+                }
+            }
+
+            async function showModal(item, type) {
+                if (trailerTimeout) clearTimeout(trailerTimeout);
+
+                modalTitle.textContent = item.title || item.name;
+                modalPoster.src = item.backdrop || item.poster;
+                modalOverview.textContent = item.overview || "No overview available";
+
+                detailsLink.href = type === "movie"
+                    ? `movie.html?id=${item.id}`
+                    : `series.html?id=${item.id}`;
+
+                // Show Modal (Tailwind: remove hidden, add flex)
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+                
+                // Reset Video State
+                modalPoster.style.display = "block";
+                playIconOverlay.style.display = "flex";
+                modalTrailer.style.display = "none";
+                modalTrailer.src = "";
+
+                trailerTimeout = setTimeout(async () => {
+                    const trailer = await fetchTrailer(item.id, type);
+                    if (trailer) {
+                        modalTrailer.src = trailer;
+                        modalPoster.style.display = "none";
+                        playIconOverlay.style.display = "none";
+                        modalTrailer.style.display = "block";
+                    }
+                }, 2000);
+            }
+
+            function closeModal() {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                modalTrailer.src = ""; // Stop video
+                if (trailerTimeout) clearTimeout(trailerTimeout);
+            }
+
+            modalClose.onclick = closeModal;
+            window.onclick = e => { if (e.target === modal) closeModal(); };
+
+            // --- 6. Search Input ---
+            queryInput.addEventListener("input", () => {
+                const value = queryInput.value.trim();
+                if (value.length > 0) {
+                    fetchMovies(value);
+                    fetchTV(value);
+                } else {
+                    fetchMovies();
+                    fetchTV();
+                }
+            });
+
+            form.addEventListener("submit", e => e.preventDefault());
+
+            // --- 7. Initialize ---
+            checkAuth();
+            fetchMovies();
+            fetchTV();
+        });
+    </script>
 </body>
 </html>
