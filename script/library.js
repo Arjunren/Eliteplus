@@ -15,21 +15,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const API_BASE = "https://eliteplus.pythonanywhere.com";
 
     document.getElementById("logout").addEventListener("click", async () => {
-    const username = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+        const username = localStorage.getItem("user");
+        const token = localStorage.getItem("token");
 
-    await fetch(API_BASE + "/api/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            Username: username,
-            Token: token
-        })
+        await fetch(API_BASE + "/api/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                Username: username,
+                Token: token
+            })
+        });
+
+        localStorage.clear();
+        window.location.href = "/";
     });
-
-    localStorage.clear();
-    window.location.href = "/";
-});
 
 
     document.getElementById("logout").addEventListener("click", async () => {
@@ -170,4 +170,32 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchMovies();
     fetchTV();
     checkAuth();
+});
+
+const btn = document.getElementById('mobileMenuBtn');
+const menu = document.getElementById('mobileMenu');
+const icon = btn.querySelector('i');
+
+btn.addEventListener('click', () => {
+    menu.classList.toggle('hidden');
+    if (menu.classList.contains('hidden')) {
+        icon.classList.remove('ri-close-line');
+        icon.classList.add('ri-menu-4-line');
+    } else {
+        icon.classList.remove('ri-menu-4-line');
+        icon.classList.add('ri-close-line');
+    }
+});
+
+// Close Modal Logic (Basic integration for the UI)
+// Note: Your main logic is in ./script/library.js, but this helper ensures the close button works UI-wise if the JS expects it.
+const modal = document.getElementById('Modal');
+const closeBtn = document.getElementById('ModalClose');
+
+closeBtn.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    // Stop iframe video if playing
+    const iframe = document.getElementById('modalTrailer');
+    iframe.src = iframe.src;
 });
