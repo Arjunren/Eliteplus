@@ -1,46 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Elite Login</title>
     <link rel="icon" href="./static/icon.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style/index.css"/>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            neon: '#00eaff',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
-<body>
-    <form action="">
-        <legend>ELITE<span style="color: #00eaff;">+</span></legend>
+<body class="bg-slate-900 text-white flex items-center justify-center min-h-screen font-sans selection:bg-brand-neon selection:text-slate-900">
 
-        <div class="det-container">
-            <label for="username">Username</label>
-            <input type="text" name="username" id="Username" required>
-
-            <label for="password">Password</label>
-            <div style="position: relative;">
-                <input class="pass" type="password" name="password" id="Password" required>
-                <span id="togglePass"
-                    style="position: absolute; font-size: 28px; right: 10px; top: 0; cursor: pointer;">
-                    <i class="ri-eye-off-fill"></i>
-                </span>
+    <div class="w-full max-w-md p-8 bg-slate-800/50 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-700 animate-fade-in-up">
+        
+        <form id="loginForm" action="">
+            
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-black tracking-wider text-white">
+                    ELITE<span class="text-brand-neon drop-shadow-[0_0_10px_rgba(0,234,255,0.5)]">+</span>
+                </h1>
+                <p class="text-slate-400 text-sm mt-2">Welcome, Login to Continue</p>
             </div>
-        </div>
 
-        <div class="jstfy">
-            <button class="loginBtn" type="submit">Log In</button>
-        </div>
+            <div class="mb-5">
+                <label for="Username" class="block text-sm font-medium text-slate-300 mb-2 pl-1">Username</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ri-user-line text-slate-500 group-focus-within:text-brand-neon transition-colors"></i>
+                    </div>
+                    <input 
+                        type="text" 
+                        name="username" 
+                        id="Username" 
+                        required
+                        class="w-full pl-10 pr-4 py-3 bg-slate-900/80 border border-slate-700 rounded-lg focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon text-slate-200 placeholder-slate-600 transition-all duration-300"
+                        placeholder="Enter your username"
+                    >
+                </div>
+            </div>
 
-        <div id="errorBox"></div>
+            <div class="mb-8">
+                <label for="Password" class="block text-sm font-medium text-slate-300 mb-2 pl-1">Password</label>
+                <div class="relative group">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="ri-lock-line text-slate-500 group-focus-within:text-brand-neon transition-colors"></i>
+                    </div>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        id="Password" 
+                        required
+                        class="w-full pl-10 pr-12 py-3 bg-slate-900/80 border border-slate-700 rounded-lg focus:outline-none focus:border-brand-neon focus:ring-1 focus:ring-brand-neon text-slate-200 placeholder-slate-600 transition-all duration-300"
+                        placeholder="••••••••"
+                    >
+                    
+                    <button type="button" id="togglePass" class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer text-slate-500 hover:text-white transition-colors">
+                        <i class="ri-eye-off-fill text-xl" id="eyeIcon"></i>
+                    </button>
+                </div>
+            </div>
 
-    </form>
+            <div class="mb-4">
+                <button 
+                    class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-cyan-500/25 transform hover:-translate-y-0.5 transition-all duration-200 ease-in-out" 
+                    type="submit">
+                    Log In
+                </button>
+            </div>
 
-<script src="./script/index.js"></script>
+            <div id="errorBox" class="hidden p-3 mt-4 text-sm text-red-200 bg-red-900/30 border border-red-800 rounded-lg text-center">
+                Invalid credentials. Please try again.
+            </div>
 
+        </form>
+    </div>
 
+    <script>
+        const togglePass = document.getElementById('togglePass');
+        const passwordInput = document.getElementById('Password');
+        const eyeIcon = document.getElementById('eyeIcon');
 
+        togglePass.addEventListener('click', function () {
+            // Toggle type
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            
+            // Toggle Icon Class
+            if (type === 'text') {
+                eyeIcon.classList.remove('ri-eye-off-fill');
+                eyeIcon.classList.add('ri-eye-fill');
+                eyeIcon.classList.add('text-brand-neon'); // Optional: Light up icon when visible
+            } else {
+                eyeIcon.classList.remove('ri-eye-fill');
+                eyeIcon.classList.add('ri-eye-off-fill');
+                eyeIcon.classList.remove('text-brand-neon');
+            }
+        });
+    </script>
 </body>
-
 </html>
