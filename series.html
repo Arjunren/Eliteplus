@@ -1,69 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
-    <meta charset="UTF-8">
-    <title>TV Series Player - ELITES+</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./static/icon.png">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style/series.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Now Playing · ELITE+</title>
+  <link rel="icon" href="./static/icon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/theme.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 
-<body>
-    <header style="z-index: 10;">
-        <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
-        <nav class="Nav-Bar">
-            <ul class="Nav-Menu">
-                <li class="Nav-Item"><a href="library.html" class="nav-link">Home</a></li>
-                <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
-                <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
-                <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
-            </ul>
-            <div class="Hamburger">
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-            </div>
-        </nav>
-    </header>
+<body class="bg-ink-950 text-white min-h-screen">
+  <div id="ep-nav"></div>
 
-    <main>
-        <div id="player-wrapper">
-            <div id="player"></div>
-        </div>
+  <main class="pt-20 sm:pt-24 px-3 sm:px-6 max-w-6xl mx-auto pb-16">
+    <a href="library.html" class="inline-flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white mb-3 transition"><i class="ri-arrow-left-line"></i> Back</a>
 
-        <div class="info-box">
-            <h2 class="info-title" id="tvName"></h2>
-            <p class="info-overview" id="tvOverview"></p>
+    <div id="player" class="relative w-full aspect-video bg-black rounded-xl overflow-hidden ring-1 ring-white/10 shadow-2xl">
+      <div class="absolute inset-0 grid place-items-center text-zinc-500"><i class="ri-loader-4-line animate-spin text-4xl"></i></div>
+    </div>
 
-            <div class="meta-grid" style="display: flex; flex-direction: column; gap: 5px; padding: 5px 0;">
-                <p><strong>Genres:</strong> <span id="genres">Unknown</span></p>
-                <p><strong>Cast:</strong> <span id="actors">Unknown</span></p>
-                <p><strong>Creator:</strong> <span id="creator">Unknown</span></p>
-                <p><strong>Country:</strong> <span id="country">—</span></p>
-                <p><strong>Rating:</strong> <span id="rating">—</span></p>
-                <p><strong>First Air Date:</strong> <span id="release">—</span></p>
-                <p><strong>Season:</strong> <span id="Season">—</span></p>
-                <p><strong>Episode:</strong> <span id="Episode">—</span></p>
-            </div>
-        </div>
+    <div class="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div id="sources" class="flex flex-wrap gap-2"></div>
+      <p id="shieldNote" class="hidden text-xs text-zinc-500 flex items-center gap-1.5">
+        <i class="ri-shield-check-fill text-brand"></i> Ad-Shield on: pop-ups &amp; redirects blocked.
+      </p>
+    </div>
 
-        <div class="season-select-box">
-            <h2 class="info-title">Watch Episodes</h2>
-            <label>Select Season:</label>
-            <select id="seasonSelect"></select>
-            <div id="episodes"></div>
-        </div>
-    </main>
+    <section class="mt-8">
+      <h1 id="tvName" class="text-2xl sm:text-4xl font-extrabold">Loading…</h1>
+      <p id="nowPlaying" class="mt-2 text-brand font-semibold text-sm"></p>
+      <div id="metaRow" class="mt-3 flex flex-wrap items-center gap-2 text-sm text-zinc-400"></div>
+      <p id="tvOverview" class="mt-4 text-zinc-300 leading-relaxed max-w-3xl"></p>
 
-    <footer>
-        <b>ELITES+ © 2025-2026</b><br>
-        Data provided by Consumet and TMDb API. ELITES+ does not host content.
-    </footer>
-    <script src="./script/checkAuth.js"></script>
-    <script src="./script/series.js"></script>
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-x-10 gap-y-3 max-w-3xl text-sm">
+        <div><span class="text-zinc-500">Genres:</span> <span id="genres" class="text-zinc-200"></span></div>
+        <div><span class="text-zinc-500">Cast:</span> <span id="actors" class="text-zinc-200"></span></div>
+        <div><span class="text-zinc-500">Creator:</span> <span id="creator" class="text-zinc-200"></span></div>
+        <div><span class="text-zinc-500">Country:</span> <span id="country" class="text-zinc-200"></span></div>
+      </div>
+    </section>
+
+    <!-- episodes -->
+    <section class="mt-10">
+      <div class="flex items-center justify-between gap-4 mb-4">
+        <h2 class="text-xl font-bold">Episodes</h2>
+        <select id="seasonSelect"
+          class="bg-ink-800 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-brand/50"></select>
+      </div>
+      <div id="episodes" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+    </section>
+  </main>
+
+  <footer class="border-t border-white/5 px-4 sm:px-8 py-8 text-center text-xs text-zinc-600">
+    <p class="font-semibold text-zinc-400">ELITE<span class="text-brand">+</span> © 2025–2026</p>
+    <p class="mt-1">Metadata by TMDb. ELITE+ does not host any media; it only links to third-party sources.</p>
+  </footer>
+
+  <script src="./script/config.js"></script>
+  <script src="./script/player.js"></script>
+  <script src="./script/series.js"></script>
 </body>
 
 </html>

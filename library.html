@@ -1,83 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
-    <meta charset="UTF-8">
-    <title>ELITES +</title>
-    <link rel="icon" href="./static/icon.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="./style/library.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home · ELITE+</title>
+  <link rel="icon" href="./static/icon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/theme.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 
-<body>
-    <header style="z-index: 10;">
-        <h1 style="color: #fff;">ELITES <span style="color: #00eaff;">+</span></h1>
-        <nav class="Nav-Bar">
-            <ul class="Nav-Menu">
-                <li class="Nav-Item"><a href="library.html" class="nav-link" style="color: #00eaff;">Home</a></li>
-                <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
-                <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link">Series</a></li>
-                <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
-            </ul>
-            <div class="Hamburger">
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-            </div>
-        </nav>
-    </header>
+<body class="bg-ink-950 text-white min-h-screen">
+  <div id="ep-nav"></div>
 
-    <div
-        style="margin-top: 150px; margin-bottom: 50px; padding: 10px; display: flex; flex-direction: column; width: 100%; gap: 10px; justify-content: center; align-items: center; padding: 0 40px;">
-        <h1 style="color: #fff;">WELCOME TO <span style="color: #00eaff;">ELITE +</span></h1>
+  <main>
+    <div id="hero"></div>
+    <div id="content" class="relative z-10 -mt-10 sm:-mt-14 pb-16"></div>
+  </main>
 
-        <p style="color: #ccc; max-width: 650px; text-align: center; font-size: 18px;">
-            Stream your favorite series and movies completely and ready to watch.</p>
+  <footer class="border-t border-white/5 px-4 sm:px-8 py-8 text-center text-xs text-zinc-600">
+    <p class="font-semibold text-zinc-400">ELITE<span class="text-brand">+</span> © 2025–2026</p>
+    <p class="mt-1">Metadata by TMDb. ELITE+ does not host any media; it only links to third-party sources.</p>
+  </footer>
 
-        <form id="searchForm" style="position: relative;">
-            <input type="text" id="query" placeholder="Search..."
-                style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 300px; outline: none;">
-            <span style="position: absolute; right: 5px; top: 5px;">
-                <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
-            </span>
-        </form>
-    </div>
-
-
-    <section class="hero">
-        <div id="moviesLibrary" class="library"></div>
-        <div id="tvLibrary" class="library"></div>
-    </section>
-
-    <div id="Modal">
-        <div class="content">
-            <div style="position: relative; width: 100%;">
-                <img id="modalPoster" style="width: 100%; height: 250px;">
-                <iframe id="modalTrailer" style="border-radius: 10px; width:100%; height:250px; border:0; display:none;"
-                    allow="autoplay; encrypted-media">
-                </iframe>
-            </div>
-
-            <div style="padding: 20px 30px; display: flex; flex-direction: column; gap: 10px;">
-                <h3 style="color: #fff; text-shadow: 1px 1px 5px #000, 1px 1px 10px #000, 1px 1px 10px #000, 1px 1px 10px #000;"
-                    id="modalTitle"></h3>
-                <p style="font-size: 16px; text-align: justify;" id="modalOverview"></p>
-                <a id="detailsLink"
-                    style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Play
-                </a>
-                <a id="ModalClose"
-                    style="font-weight: 600; text-decoration: none; text-align: center; padding: 10px; background: #fff; color: #111; border-radius: 20px; cursor: pointer; width: 100%;">Close</a>
-            </div>
-        </div>
-    </div>
-
-    <script src="./script/library.js"></script>
-
+  <script src="./script/config.js"></script>
+  <script src="./script/ui.js"></script>
+  <script src="./script/library.js"></script>
 </body>
 
 </html>

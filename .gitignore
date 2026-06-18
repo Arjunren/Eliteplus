@@ -1,0 +1,17 @@
+# Local JSON "database" — the real data lives on PythonAnywhere, these are
+# only local test fixtures and must never be committed.
+users.json
+admin.json
+sessions.json
+admin_sessions.json
+watch_history.json
+*.tmp
+
+# Local test helpers
+_test_api.py
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/

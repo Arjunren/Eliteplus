@@ -1,88 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 
 <head>
-    <meta charset="UTF-8">
-    <title>ELITES +</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="./static/icon.png">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="./style/serieslibrary.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Series · ELITE+</title>
+  <link rel="icon" href="./static/icon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/theme.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 
-<body>
+<body class="bg-ink-950 text-white min-h-screen">
+  <div id="ep-nav"></div>
 
-    <header style="z-index: 10;">
-        <div style="display: flex; align-items: center;">
-            <h1 class="HT" style="color: #fff; cursor: pointer;" onclick="window.location.href='serieslibrary.html'">
-                ELITES <span style="color: #00eaff;">+</span></h1>
-            <nav class="Nav-Bar">
-                <ul class="Nav-Menu">
-                    <li class="Nav-Item"><a href="library.html" class="nav-link">Home</a></li>
-                    <li class="Nav-Item"><a href="movielibrary.html" class="nav-link">Movies</a></li>
-                    <li class="Nav-Item"><a href="serieslibrary.html" class="nav-link"
-                            style="color: #00eaff;">Series</a></li>
-                    <li class="Nav-Item"><a id="logout" class="nav-link">Logout</a></li>
-                </ul>
-            </nav>
-        </div>
-        <div
-            style="padding: 10px; width:10%; display: flex; align-items: center; justify-content: end; gap: 30px; padding: 0 10px;">
-            <form style="position: relative;" id="searchForm">
-                <input type="text" id="query" placeholder="Search..."
-                    style="padding: 10px; border-radius: 10px; border: 1px solid #111; width: 200px; outline: none;">
-                <span style="position: absolute; right: 15px; top: 5px;">
-                    <i class="ri-search-line" style="font-size: 26px; color: #111;"></i>
-                </span>
-            </form>
-            <div class="Hamburger">
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-                <span class="Bar"></span>
-            </div>
-        </div>
-    </header>
+  <main>
+    <div id="hero"></div>
+    <div id="content" class="relative z-10 -mt-10 sm:-mt-14 pb-16"></div>
+  </main>
 
-    <!-- HERO SLIDER -->
-    <div class="hero-swiper swiper hero-section">
-        <div class="swiper-wrapper" id="heroWrapper">
-            <!-- Auto filled by JS -->
-        </div>
+  <footer class="border-t border-white/5 px-4 sm:px-8 py-8 text-center text-xs text-zinc-600">
+    <p class="font-semibold text-zinc-400">ELITE<span class="text-brand">+</span> © 2025–2026</p>
+    <p class="mt-1">Metadata by TMDb. ELITE+ does not host any media; it only links to third-party sources.</p>
+  </footer>
 
-        <!-- pagination dots -->
-        <div class="swiper-pagination"></div>
-    </div>
-
-    <section id="genres">
-
-    </section>
-
-    <div id="Modal">
-        <div class="content">
-            <img id="modalPoster">
-            <iframe id="modalTrailer" allow="autoplay; encrypted-media"></iframe>
-
-            <div style="padding:20px">
-                <h3 id="modalTitle"></h3>
-                <p id="modalOverview" style="margin:10px 0"></p>
-                <div style="display: flex; width: 100%; align-items: center; gap: 10px;">
-                    <a id="detailsLink"
-                        style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Play
-                    </a>
-                    <a id="ModalClose"
-                        style="width: 50%; text-decoration: none; display:block; text-align:center; padding:10px; background:#fff; color:#000; border-radius:10px; cursor: pointer; margin-top:10px">Close</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="./script/checkAuth.js"></script>
-    <script src="./script/serieslibrary.js"></script>
-
+  <script src="./script/config.js"></script>
+  <script src="./script/ui.js"></script>
+  <script src="./script/serieslibrary.js"></script>
 </body>
 
 </html>

@@ -1,173 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const Hamburger = document.querySelector('.Hamburger');
-    const NavMenu = document.querySelector('.Nav-Menu');
+document.addEventListener("DOMContentLoaded", async () => {
+  if (!(await EP.requireAuth())) return;
+  EP.mountNavbar("home");
+  UI.initSearch();
+  EP.playIntro();
 
-    Hamburger.addEventListener('click', () => {
-        Hamburger.classList.toggle('active');
-        NavMenu.classList.toggle('active');
-    });
+  const heroHost = document.getElementById("hero");
+  const content = document.getElementById("content");
 
-    document.querySelectorAll('.nav-link').forEach(n => n.addEventListener("click", () => {
-        Hamburger.classList.remove('active');
-        NavMenu.classList.remove('active');
-    }));
+  fetch(`${EP.API}/api/latest`)
+    .then((r) => r.json())
+    .then((d) => UI.mountHero(heroHost, d.movies || [], "movie"))
+    .catch(() => UI.mountHero(heroHost, [], "movie"));
 
-    const API_BASE = "https://eliteplus.pythonanywhere.com";
+  await UI.mountContinue(content);
 
-    document.getElementById("logout").addEventListener("click", async () => {
-    const username = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
+  // Top 10 this week (numbered)
+  const t10 = UI.makeRow(content, "Top 10 This Week");
+  UI.skeletonRow(t10.track, 6);
+  try {
+    const d = await fetch(`${EP.API}/api/trending?type=all`).then((r) => r.json());
+    if (!UI.fillTop10(t10.track, d.items || [])) t10.section.remove();
+  } catch (_) { t10.section.remove(); }
 
-    await fetch(API_BASE + "/api/logout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            Username: username,
-            Token: token
-        })
-    });
+  const rows = [
+    { title: "Trending Movies", url: "/api/movies", key: "movies", type: "movie" },
+    { title: "Popular Series", url: "/api/tv", key: "tv_shows", type: "tv" },
+    { title: "Popular Anime", url: "/api/anime?kind=series_popular", key: "tv_shows", type: "tv", noKids: true },
+    { title: "Action", url: "/api/genre?genre_id=28", key: "movies", type: "movie", genre: 28 },
+    { title: "Comedy", url: "/api/genre?genre_id=35", key: "movies", type: "movie", genre: 35 },
+    { title: "Sci-Fi & Fantasy", url: "/api/series/genre?genre_id=10765", key: "tv_shows", type: "tv", genre: 10765 },
+    { title: "Family", url: "/api/genre?genre_id=10751", key: "movies", type: "movie", genre: 10751 },
+    { title: "Horror", url: "/api/genre?genre_id=27", key: "movies", type: "movie", genre: 27 },
+    { title: "Animation", url: "/api/genre?genre_id=16", key: "movies", type: "movie", genre: 16 },
+  ];
 
-    localStorage.clear();
-    window.location.href = "/";
-});
-
-
-    document.getElementById("logout").addEventListener("click", async () => {
-        const user = localStorage.getItem("user");
-
-        await fetch(API_BASE + "/api/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Username: user })
-        });
-
-        localStorage.clear();
-        window.location.href = "/index.html";
-    });
-
-    const moviesLibrary = document.getElementById('moviesLibrary');
-    const tvLibrary = document.getElementById('tvLibrary');
-    const queryInput = document.getElementById('query');
-    const form = document.getElementById('searchForm');
-
-    async function fetchMovies(query = "") {
-        try {
-            const url = query
-                ? `${API_BASE}/api/movies?query=${encodeURIComponent(query)}`
-                : `${API_BASE}/api/movies`;
-
-            const res = await fetch(url);
-            const data = await res.json();
-            renderLibrary(data.movies || [], moviesLibrary, "movie");
-        } catch {
-            moviesLibrary.innerHTML = "<p style='color:#fff;'>Failed to load movies.</p>";
-        }
-    }
-
-    async function fetchTV(query = "") {
-        try {
-            const url = query
-                ? `${API_BASE}/api/tv?query=${encodeURIComponent(query)}`
-                : `${API_BASE}/api/tv`;
-
-            const res = await fetch(url);
-            const data = await res.json();
-            renderLibrary(data.tv_shows || [], tvLibrary, "tv");
-        } catch {
-            tvLibrary.innerHTML = "<p style='color:#fff;'>Failed to load series.</p>";
-        }
-    }
-
-    function renderLibrary(items, container, type) {
-        container.innerHTML = "";
-        items.forEach(item => {
-            if (!item.poster) return;
-
-            const div = document.createElement('div');
-            div.innerHTML = `<img src="${item.poster}" loading="lazy" style="width:100%;border-radius:5px;">`;
-            div.onclick = () => showModal(item, type);
-            container.appendChild(div);
-        });
-    }
-
-    const modal = document.getElementById('Modal');
-    const modalClose = document.getElementById('ModalClose');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalPoster = document.getElementById('modalPoster');
-    const modalOverview = document.getElementById('modalOverview');
-    const modalTrailer = document.getElementById('modalTrailer');
-    const detailsLink = document.getElementById('detailsLink');
-
-    let trailerTimeout;
-
-    async function fetchTrailer(id, type) {
-        try {
-            const url = `${API_BASE}/api/trailer?id=${id}&type=${type}`;
-            const res = await fetch(url);
-            const data = await res.json();
-
-            if (data.youtube_key) {
-                return `https://www.youtube.com/embed/${data.youtube_key}?autoplay=1&mute=0&controls=0&modestbranding=1&rel=0`;
-            }
-            return null;
-
-        } catch {
-            return null;
-        }
-    }
-
-    async function showModal(item, type) {
-        if (trailerTimeout) clearTimeout(trailerTimeout);
-
-        modalTitle.textContent = item.title || item.name;
-        modalPoster.src = item.backdrop || item.poster;
-        modalOverview.textContent = item.overview || "No overview available";
-
-        detailsLink.href = type === "movie"
-            ? `movie.html?id=${item.id}`
-            : `series.html?id=${item.id}`;
-
-        modal.style.display = "flex";
-        modalPoster.style.display = "block";
-        modalTrailer.style.display = "none";
-
-        trailerTimeout = setTimeout(async () => {
-            const trailer = await fetchTrailer(item.id, type);
-            if (trailer) {
-                modalTrailer.src = trailer;
-                modalPoster.style.display = "none";
-                modalTrailer.style.display = "block";
-            }
-        }, 2000);
-    }
-
-    modalClose.onclick = () => closeModal();
-    window.onclick = e => { if (e.target === modal) closeModal(); };
-
-    function closeModal() {
-        modal.style.display = "none";
-        modalTrailer.src = "";
-        modalPoster.style.display = "block";
-        modalTrailer.style.display = "none";
-        if (trailerTimeout) clearTimeout(trailerTimeout);
-    }
-
-    queryInput.addEventListener("input", () => {
-        const value = queryInput.value.trim();
-
-        if (value.length > 0) {
-            fetchMovies(value);
-            fetchTV(value);
-        } else {
-            fetchMovies();
-            fetchTV();
-        }
-    });
-
-    form.addEventListener("submit", e => e.preventDefault());
-
-    // Initial fetch calls
-    fetchMovies();
-    fetchTV();
-    checkAuth();
+  for (const r of rows) {
+    if (r.noKids && EP.profileKids) continue;
+    if (r.genre && !EP.genreAllowed(r.genre, r.type)) continue;
+    const { section, track } = UI.makeRow(content, r.title);
+    UI.skeletonRow(track);
+    try {
+      const data = await fetch(`${EP.API}${r.url}`).then((res) => res.json());
+      if (!UI.fillRow(track, data[r.key] || [], r.type)) section.remove();
+    } catch (_) { section.remove(); }
+  }
 });

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Who's Watching? · ELITE+</title>
+  <link rel="icon" href="./static/icon.png" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./script/theme.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body class="min-h-screen bg-ink-950 text-white">
+
+  <header class="px-6 sm:px-10 py-6 flex items-center justify-between">
+    <span class="text-2xl font-extrabold tracking-tight">ELITE<span class="text-brand">+</span></span>
+    <button id="signOut" class="text-sm text-zinc-400 hover:text-white flex items-center gap-2 transition">
+      <i class="ri-logout-box-r-line"></i> Sign out
+    </button>
+  </header>
+
+  <main class="min-h-[80vh] grid place-items-center px-4 py-10">
+    <div class="w-full max-w-4xl text-center">
+      <h1 id="screenTitle" class="text-3xl sm:text-5xl font-bold mb-3 animate-fade-up">Who's watching?</h1>
+      <p id="screenSub" class="text-zinc-400 mb-10 animate-fade-up">Pick a profile to start streaming.</p>
+
+      <div id="profilesGrid" class="flex flex-wrap items-start justify-center gap-5 sm:gap-8">
+        <!-- skeleton -->
+        <div class="skeleton w-28 h-28 sm:w-36 sm:h-36 rounded-2xl"></div>
+        <div class="skeleton w-28 h-28 sm:w-36 sm:h-36 rounded-2xl"></div>
+      </div>
+
+      <div class="mt-12 flex flex-wrap items-center justify-center gap-3">
+        <button id="manageBtn"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/20 text-zinc-300 hover:text-white hover:border-white text-sm font-semibold tracking-wide transition">
+          <i class="ri-pencil-line"></i> <span id="manageLabel">Manage Profiles</span>
+        </button>
+        <button id="parentalBtn"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-white/20 text-zinc-300 hover:text-white hover:border-white text-sm font-semibold tracking-wide transition">
+          <i id="parentalIcon" class="ri-lock-unlock-line"></i> <span id="parentalLabel">Parental Lock</span>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Profile editor modal -->
+  <div id="profileModal" class="fixed inset-0 z-[120] hidden items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+    <div class="w-full max-w-md rounded-2xl border border-white/10 bg-ink-900 shadow-2xl animate-scale-in overflow-hidden">
+      <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+        <h3 id="modalTitle" class="text-lg font-bold">Add Profile</h3>
+        <button id="modalClose" class="text-zinc-400 hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+
+      <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto thin-scroll">
+        <div class="flex items-center gap-4">
+          <div id="modalAvatarPreview" class="w-20 h-20 rounded-2xl grid place-items-center text-3xl font-bold shrink-0 shadow-lg"></div>
+          <div class="flex-1">
+            <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-2">Profile name</label>
+            <input id="profileName" type="text" maxlength="20" placeholder="e.g. Dad, Kids, Maria"
+              class="w-full px-4 py-2.5 rounded-xl bg-ink-800 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">Choose an avatar</label>
+          <div id="avatarPicker" class="flex flex-wrap gap-3"></div>
+        </div>
+
+        <label class="flex items-center gap-3 cursor-pointer select-none">
+          <input id="kidsToggle" type="checkbox" class="peer sr-only" />
+          <span class="w-11 h-6 rounded-full bg-ink-700 peer-checked:bg-brand relative transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:w-5 after:h-5 after:rounded-full after:bg-white after:transition-transform peer-checked:after:translate-x-5"></span>
+          <span class="text-sm text-zinc-300">Kids profile <span class="text-zinc-500">(family-friendly)</span></span>
+        </label>
+
+        <!-- Parental controls: allowed genres -->
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">Allowed categories</label>
+          <p class="text-xs text-zinc-500 mb-3">Pick what this profile can browse. Leave all off for full access (kids profiles default to family-friendly).</p>
+          <div id="genrePicker" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <!-- Profile PIN lock -->
+        <div>
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">Profile PIN <span class="text-zinc-600 normal-case font-normal">(optional lock)</span></label>
+          <input id="profilePin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="4–6 digits"
+            class="w-full px-4 py-2.5 rounded-xl bg-ink-800 border border-white/10 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-brand/50 transition tracking-[0.3em]" />
+          <label id="removePinRow" class="hidden items-center gap-2 mt-2 cursor-pointer">
+            <input id="removePin" type="checkbox" class="accent-brand" />
+            <span class="text-xs text-zinc-400">This profile has a PIN — check to remove it (or type a new one above)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="px-6 py-5 border-t border-white/10 flex items-center justify-between gap-3">
+        <button id="deleteProfileBtn"
+          class="hidden px-4 py-2.5 rounded-xl border border-red-400/30 text-red-300 hover:bg-red-500/10 text-sm font-semibold transition">
+          <i class="ri-delete-bin-line"></i> Delete
+        </button>
+        <div class="flex-1"></div>
+        <button id="cancelProfileBtn" class="px-4 py-2.5 rounded-xl border border-white/15 text-zinc-300 hover:bg-white/5 text-sm font-semibold transition">Cancel</button>
+        <button id="saveProfileBtn" class="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-black text-sm font-bold transition">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parental lock setup modal -->
+  <div id="parentalModal" class="fixed inset-0 z-[130] hidden items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+    <div class="w-full max-w-sm rounded-2xl border border-white/10 bg-ink-900 shadow-2xl animate-scale-in overflow-hidden">
+      <div class="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+        <h3 id="parentalTitle" class="text-lg font-bold text-white">Parental Lock</h3>
+        <button id="parentalClose" class="text-zinc-400 hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+      <div class="p-6 space-y-4">
+        <p id="parentalDesc" class="text-sm text-zinc-400"></p>
+        <div id="parentalCurrentRow" class="hidden">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">Current PIN</label>
+          <input id="parentalCurrent" type="password" inputmode="numeric" maxlength="6" autocomplete="off"
+            class="w-full px-4 py-2.5 rounded-xl bg-ink-800 border border-white/10 text-white tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-brand/50 transition" />
+        </div>
+        <div id="parentalNewRow">
+          <label class="block text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-1.5">New PIN <span class="text-zinc-600 normal-case font-normal">(4–6 digits)</span></label>
+          <input id="parentalNew" type="password" inputmode="numeric" maxlength="6" autocomplete="off"
+            class="w-full px-4 py-2.5 rounded-xl bg-ink-800 border border-white/10 text-white tracking-[0.3em] focus:outline-none focus:ring-2 focus:ring-brand/50 transition" />
+        </div>
+        <label id="parentalRemoveRow" class="hidden items-center gap-2 cursor-pointer">
+          <input id="parentalRemove" type="checkbox" class="accent-brand w-4 h-4" />
+          <span class="text-sm text-zinc-300">Turn off parental lock</span>
+        </label>
+      </div>
+      <div class="px-6 py-5 border-t border-white/10 flex justify-end gap-3">
+        <button id="parentalCancel" class="px-4 py-2.5 rounded-xl border border-white/15 text-zinc-300 hover:bg-white/5 text-sm font-semibold transition">Cancel</button>
+        <button id="parentalSave" class="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-dark text-black text-sm font-bold transition">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script/config.js"></script>
+  <script src="./script/profiles.js"></script>
+</body>
+
+</html>
